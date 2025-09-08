@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Battle Arena</title>
+    <!-- Favicon link added here -->
+    <link rel="icon" type="image/x-icon" href="https://hips.hearstapps.com/digitalspyuk.cdnds.net/16/29/1468832182-ash-ketchum-pikachu.jpg?resize=640:*">
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use a professional font system -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Define a color token system for light mode */
+        :root {
+            --color-primary: #FF1C1C;
+            --color-secondary: #FFD93D;
+            --color-bg: #F5F5F7;
+            --color-card-bg: #FFFFFF;
+            --color-border: #E0E0E0;
+            --color-text-primary: #121212;
+            --color-text-secondary: #4A4A4A;
+            --color-success: #27AE60;
+            --color-warning: #F2C94C;
+            --color-danger: #EB5757;
+            --color-log-bg: #121212;
+            --color-log-text: #F5F5F7;
+        }
+
+        /* Dark mode compatibility */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-bg: #121212;
+                --color-card-bg: #1F1F1F;
+                --color-border: #444444;
+                --color-text-primary: #E0E0E0;
+                --color-text-secondary: #AAAAAA;
+                --color-log-bg: #0A0A0A;
+                --color-log-text: #E0E0E0;
+            }
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text-primary);
+            transition: background-color 0.5s ease-in-out;
+            /* Animated background gradient */
+            background-image: linear-gradient(45deg, var(--color-bg), #2c2c2c, var(--color-bg));
+            background-size: 400% 400%;
+            animation: bg-gradient-shift 15s ease infinite;
+        }
+
+        /* Enforce a vertical rhythm with an 8px spacing scale */
+        .spacing-y-8 > * + * {
+            margin-top: 2rem; /* 32px */
+        }
+        
+        .hp-bar-container {
+            width: 100%;
+            height: 8px; /* Consistent height */
+            background-color: var(--color-border);
+            border-radius: 9999px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        .hp-bar {
+            height: 100%;
+            /* More pronounced easing for realistic HP drain */
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.6, 1);
+            border-radius: 9999px;
+        }
+
+        .battle-log {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--color-log-bg);
+            color: var(--color-log-text);
+            height: 16rem; /* Fixed height for log region */
+            overflow-y: auto;
+            border-radius: 12px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .battle-log ul {
+            padding: 0;
+            list-style: none;
+        }
+
+        .battle-log li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            /* Slower fade-in for more prominence */
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        /* More aggressive shake animation for the entire container on hit */
+        .shake-animation {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-3px, 0, 0); }
+            20%, 80% { transform: translate3d(5px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+            40%, 60% { transform: translate3d(8px, 0, 0); }
+        }
+
+        /* More dramatic critical hit effect */
+        .critical-hit-animation {
+            animation: critical-hit 0.6s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+        }
+        @keyframes critical-hit {
+            0% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.15) rotateZ(-3deg); filter: brightness(2.5) drop-shadow(0 0 20px #FFD700); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+
+        /* Fade-in animation for log entries */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pill-shaped button with gradient */
+        .primary-button {
+            background-image: linear-gradient(to right, #FF5733, #FF1C1C);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            /* More prominent pulse animation */
+            animation: pulse 2s infinite ease-in-out;
+        }
+        .primary-button:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 16px rgba(255, 28, 28, 0.4);
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+
+        /* Ghost buttons */
+        .ghost-button {
+            background-color: transparent;
+            border: 1px solid var(--color-border);
+            color: var(--color-text-primary);
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+        }
+        .ghost-button:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            transform: scale(1.05);
+        }
+        
+        /* More prominent Card Hover Animation */
+        .pokemon-card {
+            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+        }
+        .pokemon-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Victory/Defeat Animations */
+        .winner-glow {
+            animation: winner-glow 2s infinite ease-in-out;
+        }
+        @keyframes winner-glow {
+            0% { box-shadow: 0 0 10px #FFD700; }
+            50% { box-shadow: 0 0 35px #FFD700; }
+            100% { box-shadow: 0 0 10px #FFD700; }
+        }
+        
+        /* New Pokéball Recall Animation */
+        .pokeball-recall {
+            animation: recall-pokeball 1s forwards;
+        }
+        @keyframes recall-pokeball {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(0.2) rotate(360deg); opacity: 0.8; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        /* More visible idle animation */
+        .idle-animation {
+            animation: idle 4s infinite ease-in-out;
+        }
+        @keyframes idle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Page-level ambient animations */
+        @keyframes bg-gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Pokemon Entry Animation */
+        .pokemon-entry {
+            transform: translateX(-100%);
+            opacity: 0;
+            animation: slide-in 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        .pokemon-entry-2 {
+            transform: translateX(100%);
+            opacity: 0;
+            animation: slide-in-2 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        @keyframes slide-in {
+            0% { transform: translateX(-100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slide-in-2 {
+            0% { transform: translateX(100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Special Attack Effects - More realistic with pseudo-elements */
+        .pokemon-card {
+            position: relative;
+            overflow: hidden; /* Hide overflow from auras/particles */
+        }
+        
+        /* Fire Attack Effect */
+        .fire-attack-effect::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255, 100, 0, 0.5) 0%, rgba(255, 0, 0, 0) 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: fire-blast 0.5s ease-out forwards;
+        }
+        @keyframes fire-blast {
+            to { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+        }
+
+        /* Electric Attack Effect */
+        .electric-attack-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 0, 0.5);
+            animation: electric-shock 0.3s steps(10, end) forwards;
+            clip-path: polygon(50% 0%, 60% 10%, 100% 10%, 70% 30%, 80% 50%, 40% 60%, 50% 100%, 30% 90%, 0% 90%, 20% 70%, 10% 40%, 40% 20%);
+        }
+        @keyframes electric-shock {
+            from { opacity: 1; clip-path: polygon(50% 0%, 60% 10%, 100% 10%, 70% 30%, 80% 50%, 40% 60%, 50% 100%, 30% 90%, 0% 90%, 20% 70%, 10% 40%, 40% 20%); }
+            to { opacity: 0; clip-path: polygon(50% 0%, 60% 10%, 100% 10%, 70% 30%, 80% 50%, 40% 60%, 50% 100%, 30% 90%, 0% 90%, 20% 70%, 10% 40%, 40% 20%); }
+        }
+        
+        /* Water Attack Effect */
+        .water-attack-effect::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: rgba(0, 150, 255, 0.7);
+            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+            animation: water-ripple 0.8s ease-out forwards;
+        }
+        @keyframes water-ripple {
+            0% { transform: translateY(100%); opacity: 0; }
+            50% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-50%) scale(1.2); opacity: 0; }
+        }
+
+        /* Grass Attack Effect */
+        .grass-attack-effect::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(144, 238, 144, 0.6) 0%, rgba(0, 128, 0, 0) 70%);
+            border-radius: 50%;
+            animation: grass-scatter 0.6s ease-out forwards;
+        }
+        @keyframes grass-scatter {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body class="p-8">
+
+    <div id="battle-container" class="container mx-auto">
+        <header class="text-center mb-16">
+            <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-5xl">Pokémon Battle Arena</h1>
+            <p class="mt-4 text-xl text-gray-500 dark:text-gray-400">A professional-grade game system concept.</p>
+        </header>
+        
+        <!-- Main content area using a 12-column grid -->
+        <div class="grid grid-cols-12 gap-x-8 gap-y-8 mb-16">
+
+            <!-- Player 1 Card (col-span-6 on medium screens, full width on small) -->
+            <div id="player1Card" class="pokemon-card col-span-12 md:col-span-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col items-center space-y-4">
+                <div id="pokemon1-image-container" class="w-32 h-32 flex items-center justify-center">
+                    <!-- Pokémon image placeholder -->
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100" id="pokemon1-name">Pokémon Name</h2>
+                <div id="pokemon1-badge" class="px-3 py-1 text-sm font-semibold rounded-full">Type</div>
+
+                <div class="w-full space-y-2">
+                    <div class="text-sm font-semibold uppercase text-gray-600 dark:text-gray-400">HP</div>
+                    <div class="hp-bar-container">
+                        <div id="pokemon1-hp-bar" class="hp-bar" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <div class="w-full grid grid-cols-2 gap-4 text-center text-sm">
+                    <div>
+                        <div class="font-bold text-gray-900 dark:text-gray-100">ATTACK</div>
+                        <div id="pokemon1-attack-stat">0</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-gray-900 dark:text-gray-100">SPECIAL</div>
+                        <div id="pokemon1-special-stat">0</div>
+                    </div>
+                </div>
+                <select id="pokemon1-select" class="w-full p-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"></select>
+            </div>
+
+            <!-- Player 2 Card (col-span-6 on medium screens, full width on small) -->
+            <div id="player2Card" class="pokemon-card col-span-12 md:col-span-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col items-center space-y-4">
+                <div id="pokemon2-image-container" class="w-32 h-32 flex items-center justify-center">
+                    <!-- Pokémon image placeholder -->
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100" id="pokemon2-name">Pokémon Name</h2>
+                <div id="pokemon2-badge" class="px-3 py-1 text-sm font-semibold rounded-full">Type</div>
+                
+                <div class="w-full space-y-2">
+                    <div class="text-sm font-semibold uppercase text-gray-600 dark:text-gray-400">HP</div>
+                    <div class="hp-bar-container">
+                        <div id="pokemon2-hp-bar" class="hp-bar" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <div class="w-full grid grid-cols-2 gap-4 text-center text-sm">
+                    <div>
+                        <div class="font-bold text-gray-900 dark:text-gray-100">ATTACK</div>
+                        <div id="pokemon2-attack-stat">0</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-gray-900 dark:text-gray-100">SPECIAL</div>
+                        <div id="pokemon2-special-stat">0</div>
+                    </div>
+                </div>
+                <select id="pokemon2-select" class="w-full p-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"></select>
+            </div>
+        </div>
+
+        <!-- Battle Controls -->
+        <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16">
+            <button id="battleButton" class="w-full sm:w-auto px-12 py-4 text-lg font-bold text-white rounded-full shadow-lg primary-button">
+                Start Battle!
+            </button>
+            <button id="randomButton" class="w-full sm:w-auto px-8 py-3 font-medium rounded-full ghost-button">
+                Randomize
+            </button>
+            <button id="resetButton" class="w-full sm:w-auto px-8 py-3 font-medium rounded-full ghost-button">
+                Reset
+            </button>
+        </div>
+        
+        <!-- Battle Log -->
+        <div class="w-full p-6 battle-log">
+            <h2 class="text-xl font-bold text-white mb-4">Battle Log</h2>
+            <ul id="log-list" class="space-y-2">
+                <!-- Log messages will appear here -->
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // Use a self-invoking function to prevent global scope pollution
+        (function() {
+            // --- Helper Functions and Constants ---
+            const getElement = (id) => document.getElementById(id);
+            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+            const battleContainer = getElement('battle-container');
+
+            const POKEMON_DATA = [
+                { id: 25, name: 'Pikachu', type: 'Electric', hp: 100, attack: 15, special: 25 },
+                { id: 1, name: 'Bulbasaur', type: 'Grass', hp: 110, attack: 14, special: 20 },
+                { id: 4, name: 'Charmander', type: 'Fire', hp: 105, attack: 16, special: 22 },
+                { id: 7, name: 'Squirtle', type: 'Water', hp: 115, attack: 13, special: 20 },
+                { id: 39, name: 'Jigglypuff', type: 'Normal', hp: 130, attack: 12, special: 18 },
+                { id: 143, name: 'Snorlax', type: 'Normal', hp: 180, attack: 18, special: 10 },
+            ];
+
+            // --- DOM Elements ---
+            const pokemon1Select = getElement('pokemon1-select');
+            const pokemon2Select = getElement('pokemon2-select');
+            const battleButton = getElement('battleButton');
+            const randomButton = getElement('randomButton');
+            const resetButton = getElement('resetButton');
+            const logList = getElement('log-list');
+            const player1Card = getElement('player1Card');
+            const player2Card = getElement('player2Card');
+            const pokemon1ImageContainer = getElement('pokemon1-image-container');
+            const pokemon2ImageContainer = getElement('pokemon2-image-container');
+
+            // --- OOP Classes ---
+            class Pokemon {
+                constructor(name, hp, attack, id, type) {
+                    this.name = name;
+                    this.maxHp = hp;
+                    this._currentHp = hp;
+                    this.attackPower = attack;
+                    this.id = id;
+                    this.type = type;
+                    this.image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${this.id}.png`;
+                }
+
+                takeDamage(damage) {
+                    this._currentHp = Math.max(0, this._currentHp - damage);
+                    this.animateHpBar();
+                }
+
+                isFainted() {
+                    return this._currentHp <= 0;
+                }
+
+                attack() {
+                    const damage = Math.floor(this.attackPower * (Math.random() * 0.5 + 0.75));
+                    this.log(`${this.name} used a normal attack! It deals ${damage} damage.`);
+                    return damage;
+                }
+                
+                specialAttack() {
+                    this.log(`${this.name} tried to use a special attack, but it had no effect.`);
+                    return 0;
+                }
+
+                animateHpBar() {
+                    const hpBar = getElement(`${this.name === pokemon1.name ? 'pokemon1' : 'pokemon2'}-hp-bar`);
+                    if (hpBar) {
+                        const percentage = (this._currentHp / this.maxHp) * 100;
+                        hpBar.style.width = `${percentage}%`;
+                        
+                        // Change color based on HP
+                        if (percentage > 50) {
+                            hpBar.style.backgroundColor = 'var(--color-success)';
+                        } else if (percentage > 20) {
+                            hpBar.style.backgroundColor = 'var(--color-warning)';
+                        } else {
+                            hpBar.style.backgroundColor = 'var(--color-danger)';
+                        }
+                    }
+                }
+
+                log(message) {
+                    const li = document.createElement('li');
+                    li.textContent = message;
+                    logList.appendChild(li);
+                    logList.scrollTop = logList.scrollHeight;
+                }
+            }
+
+            class FirePokemon extends Pokemon {
+                constructor(name, hp, attack, special, id) {
+                    super(name, hp, attack, id, 'Fire');
+                    this.specialAttackPower = special;
+                }
+                specialAttack() {
+                    this.log(`${this.name} used a fiery blast! 🔥`);
+                    const damage = this.specialAttackPower;
+                    return damage;
+                }
+            }
+
+            class WaterPokemon extends Pokemon {
+                constructor(name, hp, attack, special, id) {
+                    super(name, hp, attack, id, 'Water');
+                    this.specialAttackPower = special;
+                }
+                specialAttack() {
+                    this.log(`${this.name} shot a powerful stream of water! 💧`);
+                    const damage = this.specialAttackPower;
+                    return damage;
+                }
+            }
+
+            class ElectricPokemon extends Pokemon {
+                constructor(name, hp, attack, special, id) {
+                    super(name, hp, attack, id, 'Electric');
+                    this.specialAttackPower = special;
+                }
+                specialAttack() {
+                    this.log(`${this.name} zapped the opponent with a thunder shock! ⚡`);
+                    const damage = this.specialAttackPower;
+                    if (Math.random() < 0.3) {
+                        this.log(`The opponent is stunned!`);
+                        return { damage, stun: true };
+                    }
+                    return { damage, stun: false };
+                }
+            }
+            
+            class GrassPokemon extends Pokemon {
+                constructor(name, hp, attack, special, id) {
+                    super(name, hp, attack, id, 'Grass');
+                    this.specialAttackPower = special;
+                }
+                specialAttack() {
+                    this.log(`${this.name} threw a sharp leaf storm! 🌿`);
+                    const damage = this.specialAttackPower;
+                    return damage;
+                }
+            }
+
+            // --- Game State Variables ---
+            let pokemon1, pokemon2;
+            let isBattleRunning = false;
+            
+            // --- UI and Event Handlers ---
+            function populateDropdowns() {
+                const options = POKEMON_DATA.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+                pokemon1Select.innerHTML = options;
+                pokemon2Select.innerHTML = options;
+                pokemon2Select.value = POKEMON_DATA[1].name;
+                updatePokemonDisplay(1);
+                updatePokemonDisplay(2);
+            }
+
+            function updatePokemonDisplay(player) {
+                const select = player === 1 ? pokemon1Select : pokemon2Select;
+                const displayCard = player === 1 ? player1Card : player2Card;
+                const selectedPokemonData = POKEMON_DATA.find(p => p.name === select.value);
+
+                if (!selectedPokemonData) return;
+
+                const { id, name, hp, attack, special, type } = selectedPokemonData;
+                switch (type) {
+                    case 'Fire':
+                        if (player === 1) pokemon1 = new FirePokemon(name, hp, attack, special, id);
+                        else pokemon2 = new FirePokemon(name, hp, attack, special, id);
+                        break;
+                    case 'Water':
+                        if (player === 1) pokemon1 = new WaterPokemon(name, hp, attack, special, id);
+                        else pokemon2 = new WaterPokemon(name, hp, attack, special, id);
+                        break;
+                    case 'Electric':
+                        if (player === 1) pokemon1 = new ElectricPokemon(name, hp, attack, special, id);
+                        else pokemon2 = new ElectricPokemon(name, hp, attack, special, id);
+                        break;
+                    case 'Grass':
+                        if (player === 1) pokemon1 = new GrassPokemon(name, hp, attack, special, id);
+                        else pokemon2 = new GrassPokemon(name, hp, attack, special, id);
+                        break;
+                    default:
+                        if (player === 1) pokemon1 = new Pokemon(name, hp, attack, id, type);
+                        else pokemon2 = new Pokemon(name, hp, attack, id, type);
+                        break;
+                }
+                
+                const imageContainer = displayCard.querySelector(`#pokemon${player}-image-container`);
+                imageContainer.innerHTML = `<img src="${player === 1 ? pokemon1.image : pokemon2.image}" alt="${name}" class="w-32 h-32 rounded-lg idle-animation">`;
+                displayCard.querySelector(`#pokemon${player}-name`).textContent = name;
+                displayCard.querySelector(`#pokemon${player}-attack-stat`).textContent = attack;
+                displayCard.querySelector(`#pokemon${player}-special-stat`).textContent = special;
+                
+                const badge = displayCard.querySelector(`#pokemon${player}-badge`);
+                badge.textContent = type;
+                let badgeColor = '';
+                switch (type) {
+                    case 'Fire': badgeColor = 'bg-red-400 text-white'; break;
+                    case 'Water': badgeColor = 'bg-blue-400 text-white'; break;
+                    case 'Electric': badgeColor = 'bg-yellow-400 text-gray-800'; break;
+                    case 'Grass': badgeColor = 'bg-green-400 text-white'; break;
+                    default: badgeColor = 'bg-gray-400 text-white'; break;
+                }
+                badge.className = `px-3 py-1 text-sm font-semibold rounded-full ${badgeColor}`;
+                
+                const hpBar = displayCard.querySelector(`#pokemon${player}-hp-bar`);
+                hpBar.style.width = '100%';
+                hpBar.style.backgroundColor = 'var(--color-success)';
+            }
+
+            async function startBattle() {
+                if (isBattleRunning) {
+                    pokemon1.log("A battle is already in progress!");
+                    return;
+                }
+                if (pokemon1.name === pokemon2.name) {
+                    pokemon1.log("You can't battle yourself! Pick two different Pokémon.");
+                    return;
+                }
+
+                isBattleRunning = true;
+                battleButton.disabled = true;
+                randomButton.disabled = true;
+                resetButton.disabled = true;
+                logList.innerHTML = '';
+                battleButton.textContent = 'In Battle...';
+
+                // Initial card entry animation
+                player1Card.classList.add('pokemon-entry');
+                player2Card.classList.add('pokemon-entry-2');
+                await sleep(1000);
+                
+                pokemon1.log(`**The battle between ${pokemon1.name} and ${pokemon2.name} begins!**`);
+                await sleep(1000);
+
+                let attacker = pokemon1;
+                let defender = pokemon2;
+                let turn = 1;
+
+                while (!pokemon1.isFainted() && !pokemon2.isFainted()) {
+                    pokemon1.log(`--- Turn ${turn} ---`);
+                    await sleep(1000);
+
+                    const attackerCard = getElement(`${attacker === pokemon1 ? 'player1Card' : 'player2Card'}`);
+                    const defenderCard = getElement(`${defender === pokemon1 ? 'player1Card' : 'player2Card'}`);
+                    
+                    let damage, stunned = false, isCritical = false;
+                    let attackType = attacker.type;
+
+                    if (Math.random() < 0.3) {
+                        // Apply type-specific special attack animation
+                        const effectClass = `${attackType.toLowerCase()}-attack-effect`;
+                        attackerCard.classList.add(effectClass);
+                        
+                        const attackResult = attacker.specialAttack();
+                        if (typeof attackResult === 'object') {
+                            damage = attackResult.damage;
+                            stunned = attackResult.stun;
+                        } else {
+                            damage = attackResult;
+                        }
+
+                        // Remove the effect class after the animation
+                        await sleep(500);
+                        attackerCard.classList.remove(effectClass);
+
+                    } else {
+                        damage = attacker.attack();
+                    }
+
+                    // Critical hit chance
+                    if (Math.random() < 0.15) {
+                        damage *= 2;
+                        isCritical = true;
+                        pokemon1.log(`It's a critical hit! Double damage!`);
+                        // Added more prominent camera shake and flash for critical hits
+                        battleContainer.classList.add('shake-animation');
+                        defenderCard.classList.add('critical-hit-animation');
+                        await sleep(600);
+                        battleContainer.classList.remove('shake-animation');
+                        defenderCard.classList.remove('critical-hit-animation');
+                    }
+
+                    defender.takeDamage(damage);
+
+                    // Apply shake and flash animations
+                    defenderCard.classList.add('shake-animation');
+                    await sleep(400); // Increased duration
+                    defenderCard.classList.remove('shake-animation');
+                    
+
+                    // Slow-mo finish
+                    if (defender._currentHp / defender.maxHp < 0.25) {
+                        pokemon1.log('The battle is reaching a dramatic climax...');
+                        await sleep(3000); // Increased slow-mo duration
+                    } else {
+                        await sleep(1500); // Increased normal wait time
+                    }
+
+                    if (stunned) {
+                        await sleep(1000);
+                        pokemon1.log(`${defender.name} is stunned and misses a turn!`);
+                    } else {
+                        [attacker, defender] = [defender, attacker];
+                    }
+
+                    await sleep(500);
+                    turn++;
+                }
+
+                pokemon1.log('--- Battle ends! ---');
+                await sleep(500);
+                if (pokemon1.isFainted()) {
+                    player1Card.classList.add('pokeball-recall');
+                    player2Card.classList.add('winner-glow');
+                    pokemon1.log(`**${pokemon2.name} wins!**`);
+                } else {
+                    player2Card.classList.add('pokeball-recall');
+                    player1Card.classList.add('winner-glow');
+                    pokemon1.log(`**${pokemon1.name} wins!**`);
+                }
+
+                isBattleRunning = false;
+                battleButton.disabled = false;
+                randomButton.disabled = false;
+                resetButton.disabled = false;
+                battleButton.textContent = 'Start Battle!';
+            }
+
+            function resetGame() {
+                isBattleRunning = false;
+                battleButton.disabled = false;
+                randomButton.disabled = false;
+                resetButton.disabled = false;
+                battleButton.textContent = 'Start Battle!';
+                logList.innerHTML = '';
+                player1Card.classList.remove('winner-glow', 'pokeball-recall', 'pokemon-entry');
+                player2Card.classList.remove('winner-glow', 'pokeball-recall', 'pokemon-entry-2');
+                populateDropdowns();
+            }
+
+            // Event Listeners
+            document.addEventListener('DOMContentLoaded', populateDropdowns);
+            pokemon1Select.addEventListener('change', () => updatePokemonDisplay(1));
+            pokemon2Select.addEventListener('change', () => updatePokemonDisplay(2));
+            battleButton.addEventListener('click', startBattle);
+            randomButton.addEventListener('click', () => {
+                const getRandomPokemon = () => POKEMON_DATA[Math.floor(Math.random() * POKEMON_DATA.length)].name;
+                let p1Name = getRandomPokemon();
+                let p2Name = getRandomPokemon();
+                while (p1Name === p2Name) {
+                    p2Name = getRandomPokemon();
+                }
+                pokemon1Select.value = p1Name;
+                pokemon2Select.value = p2Name;
+                updatePokemonDisplay(1);
+                updatePokemonDisplay(2);
+            });
+            resetButton.addEventListener('click', resetGame);
+        })();
+    </script>
+</body>
+</html>
