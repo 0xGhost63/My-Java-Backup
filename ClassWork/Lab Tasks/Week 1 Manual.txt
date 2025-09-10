@@ -1,0 +1,15 @@
+Lab Task 1
+A Student is an object in a university management System. Analyze the concept and identify the data
+members that a Student class should have. Also analyze the behavior of student in a university
+management System and identify the methods that should be included in Student class.
+Lab Task 2
+Time is an intangible concept. Analyze the concept and identify the data members and methods that
+should be included in Time class.
+
+Lab Task 3
+Car is an object that helps us in transportation. Analyze the concept and identify the data members and
+methods that should be included in Car class.
+
+Lab Task 4
+Rectangle is an object that represents a specific shape. Analyze the concept and identify the data
+members and methods that should be included in Rectangle class.

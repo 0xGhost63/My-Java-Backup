@@ -1,0 +1,85 @@
+🏦 ATM Simulator — Requirements
+1️⃣ Project Overview
+
+Build a console or GUI-based ATM simulator where users can “log in” and perform basic banking operations like withdrawing, depositing, checking balance, and exiting. No real money here (duh), just a simulation.
+
+2️⃣ Core Features (MVP)
+
+Login System:
+
+PIN authentication (fixed PIN for simplicity).
+
+View Balance:
+
+Display current account balance.
+
+Withdraw Money:
+
+Deducts amount if sufficient balance.
+
+Show error if balance is insufficient.
+
+Deposit Money:
+
+Add amount to balance.
+
+Exit:
+
+Option to quit safely.
+
+3️⃣ Optional Features (If Time Allows)
+
+Multiple accounts (username + PIN).
+
+Mini statement (last 5 transactions).
+
+Limit per withdrawal.
+
+Lock account after 3 wrong PIN attempts.
+
+Simple GUI (buttons for operations).
+
+4️⃣ Interface Requirements
+
+CLI Version: Easy text prompts in terminal.
+
+GUI Version (Bonus):
+
+Keypad-style PIN entry.
+
+Buttons for Withdraw, Deposit, Balance, Exit.
+
+Neat, bank-like theme.
+
+5️⃣ Tech Stack
+
+Language: Python (quick) or Java (if you want OOP practice).
+
+CLI: input(), loops, functions.
+
+GUI: Tkinter (Python) or Swing (Java).
+
+6️⃣ User Flow
+
+Start program → Welcome message.
+
+Enter PIN → Validate → Access granted.
+
+Menu: Withdraw, Deposit, Balance, Exit.
+
+Perform action → Show updated balance.
+
+Option to go back to menu or quit.
+
+7️⃣ Future Scope
+
+Database (SQLite/MySQL) for real account storage.
+
+Card simulation (like unique card numbers).
+
+Multi-currency support.
+
+Receipt printing (text-based).
+
+This is a perfect beginner OOP project!
+We can make Phase 1 a simple terminal version first.
