@@ -16,4 +16,4 @@ for root, dirs, files in os.walk(directory):
             except Exception as e:
                 print(f"Failed to delete {file_path}: {e}")
 
-print("All .class files deleted successfully!")
+print("\nAll .class files deleted successfully !!!\n")
