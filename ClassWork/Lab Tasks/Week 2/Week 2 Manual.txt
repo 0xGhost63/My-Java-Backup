@@ -1,0 +1,16 @@
+Lab Task 1
+Create a class circle class with radius as data member. Create two constructors (no argument, and two
+arguments) and a method to calculate Circumference.
+
+Lab Task 2
+Create a class Account class with balance as data member. Create two constructors (no argument, and
+two arguments) and methods to withdraw and deposit balance.
+Lab Task 3
+Create a class ―Distance‖ with two constructors (no argument, and two argument), two data members
+(feet and inches). Also create display function which displays all data members.
+Lab Task 4
+Write a class Marks with three data members to store three marks. Create two constructors and a method
+to calculate and return the sum.
+Lab Task 5
+Write a class Time with three data members to store hr, min and seconds. Create two constructors and
+apply checks to set valid time. Also create display function which displays all data members.
