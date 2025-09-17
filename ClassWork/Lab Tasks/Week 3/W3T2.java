@@ -1,8 +1,8 @@
 class Account
 {
-    int accountNumber;      //Account Number
-    String accountHolder;   //Name of the holder
-    double balance;         //Account Balance
+    int accountNumber; //Account Number
+    String accountHolder;//Name of the holder
+    double balance;//Account Balance
     static int accountCounter;//Counter that increases upon the creation of the account
     
     Account(int accountNumber,String accountHolder,double balance)// Constructor
