@@ -112,6 +112,8 @@ public class W3T4
             if (Student.calculateGPA(individual.marks,individual.studentName)>topGPA) 
             {
                 topPerformer=individual.studentName;
+                topGPA = Student.calculateGPA(individual.marks, individual.studentName); 
+
             }
             
         }
