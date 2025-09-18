@@ -1,10 +1,17 @@
+//DONE
 class Account
 {
-    int accountNumber; //Account Number
-    String accountHolder;//Name of the holder
-    double balance;//Account Balance
-    static int accountCounter;//Counter that increases upon the creation of the account
+    // Attributes
+
+    int accountNumber; 
+    String accountHolder;
+    double balance;
+
+    //Counter that increases upon the creation of the account
+    static int accountCounter;
     
+    //Constructor
+
     Account(int accountNumber,String accountHolder,double balance)// Constructor
     {
         this.accountNumber=accountNumber;
@@ -12,6 +19,8 @@ class Account
         this.balance=balance;
         accountCounter++;
     }
+
+    // Methods :
 
     double deposit (double amount)
     {
@@ -40,10 +49,9 @@ class Account
 
     void displayData()
     {
-        System.out.print("\n===AFTER THE TRANSCATION===\n");
         System.out.print("Account Number : "+accountNumber);
         System.out.print(",\tAccount Holder : "+accountHolder);
-        System.out.printf("\tBalance : %.2f%s ",balance,"PKR\n");
+        System.out.printf("\tBalance : %.2f%s",balance,"PKR\n");
     }
 }
 
@@ -51,28 +59,37 @@ public class W3T2
 {
     public static void main(String[] args)
     {
-        Account A1= new Account(101,"Ali",1000);
+        Account A1= new Account(101,"Ali",10000);
         Account A2=new Account(102,"Shahroz",5000);
-        Account A3=new Account(103,"Khan",2000);
+        Account A3=new Account(103,"Khan",1000);
 
         // WITHDRAW
-        double result1 = A1.withDraw(1000);  // single call
+        System.out.println("\n===WITHDRAWL OUTPUT===");
+        A1.displayData();
+        System.out.println("After withdrawing 2,000 PKR : ");
+        A1.withDraw(2000);
         A1.displayData(); // after transaction
-        if(result1 != 0)
-        {
-            System.out.println("After Withdrawl of 1000 PKR : " + result1);
-        }
-        else
-        {
-            System.out.println("After Withdrawl of 1000 PKR : Transaction Failed!");
-        }
+
 
         // DEPOSIT
+        System.out.println("\n===DEPOSIT OUTPUT===");
         A2.displayData();
-        double result2 = A2.deposit(2000);
-        System.out.println("Balance after the Deposit is : " + result2);
+        A2.deposit(1000);
+        System.out.println("After depositing 1,0000 PKR");
+        A2.displayData();
 
-        // NORMAL
+        // FAILED TRANSACTION
+        System.out.println("\n===FAILED WITHDRAW OUTPUT===");
+        A3.displayData();
+        System.out.println("After withdrawal attempt : ");
+
+        //Stored the return value in a variable to avoid double calling and Printing
+        double withdrawResult = A3.withDraw(500);
+
+        if (withdrawResult != 0)
+        {
+            System.out.println("The balance after withdrawl is : " + withdrawResult);
+        }
         A3.displayData();
 
         // Number of accounts

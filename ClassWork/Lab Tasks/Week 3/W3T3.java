@@ -1,3 +1,4 @@
+//DONE
 class Product
 {
     //Attributes
@@ -14,10 +15,9 @@ class Product
     }
     //Discount setter
 
-    static double setDiscount(double dis) 
+    static void setDiscount(double dis) 
     {
         discount=dis; //Sets the discount
-        return discount;
     }
     //returns the discounted price of a product
     double calculateDiscountedPrice()

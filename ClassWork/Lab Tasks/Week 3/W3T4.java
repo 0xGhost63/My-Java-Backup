@@ -1,6 +1,6 @@
-import java.net.Socket;
-import java.util.Arrays;
-import java.util.Scanner;
+//DONE
+import java.util.Arrays; // Used for converting grades (char)
+import java.util.Scanner; // Used for taking Input
 class Student
 {
     //Attributes
@@ -105,7 +105,7 @@ public class W3T4
         //Displaying + Top Performer decision 
         String topPerformer=null;
         double topGPA=0;
-        System.out.println("====Output====");
+        System.out.printf("%30s\n","====OUTPUT====");
         for(Student individual : students)
         {
             individual.displayDetails();
