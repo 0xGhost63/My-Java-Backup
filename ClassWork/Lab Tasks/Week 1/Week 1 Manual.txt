@@ -13,7 +13,9 @@ should be included in Time class.
 Lab Task 3
 Car is an object that helps us in transportation. Analyze the concept and identify the data members and
 methods that should be included in Car class.
+(DONE)
 
 Lab Task 4
 Rectangle is an object that represents a specific shape. Analyze the concept and identify the data
 members and methods that should be included in Rectangle class.
+(DONE)
