@@ -59,9 +59,9 @@ public class W3T2
 {
     public static void main(String[] args)
     {
-        Account A1= new Account(101,"Ali",10000);
+        Account A1= new Account(101,"Sannan",10000);
         Account A2=new Account(102,"Shahroz",5000);
-        Account A3=new Account(103,"Khan",1000);
+        Account A3=new Account(103,"Sumama",1000);
 
         // WITHDRAW
         System.out.println("\n===WITHDRAWL OUTPUT===");

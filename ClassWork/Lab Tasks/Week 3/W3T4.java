@@ -1,4 +1,3 @@
-//DONE
 import java.util.Arrays; // Used for converting grades (char)
 import java.util.Scanner; // Used for taking Input
 class Student
