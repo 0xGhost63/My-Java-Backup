@@ -1,0 +1,321 @@
+📘 Java java.util.Arrays Cheat Sheet
+
+
+| **Method**                   | **What it Does**                       | **Example**                      | **Output**         |
+| ---------------------------- | -------------------------------------- | -------------------------------- | ------------------ |
+| `toString(arr)`              | Prints 1D array in readable form       | `[1, 2, 3]`                      | `[1, 2, 3]`        |
+| `deepToString(arr)`          | Prints multi-dim arrays nicely         | `[[1, 2], [3, 4]]`               | `[[1, 2], [3, 4]]` |
+| `sort(arr)`                  | Sorts array (ascending)                | `[5, 2, 9]` → sort               | `[2, 5, 9]`        |
+| `parallelSort(arr)`          | Faster sort using threads (big arrays) | `[9,1,7,3]` → parallelSort       | `[1, 3, 7, 9]`     |
+| `binarySearch(arr, val)`     | Finds index of value in sorted array   | `binarySearch([1,3,5], 5)`       | `2`                |
+| `fill(arr, val)`             | Fills all elements with one value      | fill `[0,0,0]` with `5`          | `[5, 5, 5]`        |
+| `equals(a, b)`               | Checks if two arrays are identical     | `[1,2,3]` vs `[1,2,3]`           | `true`             |
+| `deepEquals(a, b)`           | Same as equals(), but for 2D+ arrays   | `[[1,2],[3]]` vs `[[1,2],[3]]`   | `true`             |
+| `copyOf(arr, newLen)`        | Copies array into new length           | copyOf `[1,2,3]`, len=5          | `[1,2,3,0,0]`      |
+| `copyOfRange(arr, from, to)` | Copies a sub-range of array            | copyOfRange `[10,20,30,40]`, 1→3 | `[20,30]`          |
+| `asList(arr)`                | Converts array → List (fixed size)     | `{"Ali","Sara"}` → asList        | `[Ali, Sara]`      |
+
+
+The Arrays class in Java (from java.util) provides static utility methods to work with arrays (sorting, searching, comparing, converting, etc.).
+
+🔑 Major Functions & Their Uses
+🔹 1. toString(array)
+
+Converts a 1D array into a readable string.
+
+Example: [1, 2, 3] instead of memory@hashcode.
+
+🔹 2. deepToString(array)
+
+Same as toString(), but works for multidimensional arrays.
+
+Example: [[1, 2], [3, 4]].
+
+🔹 3. sort(array)
+
+Sorts array in ascending order (numeric or lexicographic for Strings).
+
+Uses Dual-Pivot Quicksort internally for primitives.
+
+Example: [5, 2, 9] → [2, 5, 9].
+
+🔹 4. parallelSort(array)
+
+Like sort(), but faster on large arrays using parallelism (multi-threading).
+
+🔹 5. binarySearch(array, value)
+
+Finds the index of a value in a sorted array.
+
+If found → returns index.
+
+If not found → returns -(insertionPoint) - 1.
+
+⚠️ Only works correctly on sorted arrays.
+
+🔹 6. fill(array, value)
+
+Fills the whole array with a single value.
+
+Example: [0, 0, 0] → [5, 5, 5].
+
+🔹 7. equals(arr1, arr2)
+
+Checks if two arrays are identical element by element.
+
+Example: [1, 2, 3] and [1, 2, 3] → true.
+
+🔹 8. deepEquals(arr1, arr2)
+
+Same as equals(), but for multidimensional arrays.
+
+🔹 9. copyOf(array, newLength)
+
+Creates a new array copy with the given length.
+
+If new length > original → fills with default values.
+
+🔹 10. copyOfRange(array, from, to)
+
+Copies a sub-range of an array into a new one.
+
+Example: copy range [1..3).
+
+🔹 11. asList(array)
+
+Converts an array into a fixed-size List.
+
+⚠️ You can’t change the size (no add/remove), but you can update elements.
+
+⭐ Quick Recap
+
+Convert → toString, deepToString, asList
+
+Sort → sort, parallelSort
+
+Search → binarySearch
+
+Compare → equals, deepEquals
+
+Copy → copyOf, copyOfRange
+
+Fill → fill
+
+So basically:
+👉 Use sort() to organize, binarySearch() to find, copyOf() to duplicate, equals() to check, and toString() to print nicely.📘 Java java.util.Arrays Cheat Sheet
+
+The Arrays class in Java (from java.util) provides static utility methods to work with arrays (sorting, searching, comparing, converting, etc.).
+
+🔑 Major Functions & Their Uses
+🔹 1. toString(array)
+
+Converts a 1D array into a readable string.
+
+Example: [1, 2, 3] instead of memory@hashcode.
+
+🔹 2. deepToString(array)
+
+Same as toString(), but works for multidimensional arrays.
+
+Example: [[1, 2], [3, 4]].
+
+🔹 3. sort(array)
+
+Sorts array in ascending order (numeric or lexicographic for Strings).
+
+Uses Dual-Pivot Quicksort internally for primitives.
+
+Example: [5, 2, 9] → [2, 5, 9].
+
+🔹 4. parallelSort(array)
+
+Like sort(), but faster on large arrays using parallelism (multi-threading).
+
+🔹 5. binarySearch(array, value)
+
+Finds the index of a value in a sorted array.
+
+If found → returns index.
+
+If not found → returns -(insertionPoint) - 1.
+
+⚠️ Only works correctly on sorted arrays.
+
+🔹 6. fill(array, value)
+
+Fills the whole array with a single value.
+
+Example: [0, 0, 0] → [5, 5, 5].
+
+🔹 7. equals(arr1, arr2)
+
+Checks if two arrays are identical element by element.
+
+Example: [1, 2, 3] and [1, 2, 3] → true.
+
+🔹 8. deepEquals(arr1, arr2)
+
+Same as equals(), but for multidimensional arrays.
+
+🔹 9. copyOf(array, newLength)
+
+Creates a new array copy with the given length.
+
+If new length > original → fills with default values.
+
+🔹 10. copyOfRange(array, from, to)
+
+Copies a sub-range of an array into a new one.
+
+Example: copy range [1..3).
+
+🔹 11. asList(array)
+
+Converts an array into a fixed-size List.
+
+⚠️ You can’t change the size (no add/remove), but you can update elements.
+
+⭐ Quick Recap
+
+Convert → toString, deepToString, asList
+
+Sort → sort, parallelSort
+
+Search → binarySearch
+
+Compare → equals, deepEquals
+
+Copy → copyOf, copyOfRange
+
+Fill → fill
+
+So basically:
+👉 Use sort() to organize, binarySearch() to find, copyOf() to duplicate, equals() to check, and toString() to print nicely.
+
+
+=======================================================================================================================================
+
+
+🔹 1. Printing Arrays
+toString(array)
+
+Converts a 1D array into a readable string.
+
+Example:
+
+int[] arr = {1, 2, 3};
+System.out.println(Arrays.toString(arr));
+
+
+✅ Output: [1, 2, 3]
+
+Without it → prints memory address like [I@36baf30c. 🤮
+
+deepToString(array)
+
+Same as toString(), but works for multi-dimensional arrays.
+
+Example:
+
+int[][] arr = {{1, 2}, {3, 4}};
+System.out.println(Arrays.deepToString(arr));
+
+
+✅ Output: [[1, 2], [3, 4]]
+
+🔹 2. Sorting Arrays
+sort(array)
+
+Sorts the array in ascending order.
+
+Works for numbers, chars, and Strings (alphabetical order).
+
+Example:
+[5, 2, 9, 1] → [1, 2, 5, 9]
+
+parallelSort(array)
+
+Same as sort(), but faster on very large arrays because it uses multiple CPU threads.
+
+For small arrays, sort() is usually enough.
+
+🔹 3. Searching
+binarySearch(array, key)
+
+Finds the index of key in a sorted array.
+
+If found → returns index.
+
+If not found → returns negative number (-(insertion point) - 1).
+
+Example:
+
+int[] arr = {1, 3, 5, 7};
+System.out.println(Arrays.binarySearch(arr, 5)); // 2
+System.out.println(Arrays.binarySearch(arr, 4)); // -3
+
+🔹 4. Filling Arrays
+fill(array, value)
+
+Sets all elements of the array to the same value.
+
+Example:
+
+int[] arr = new int[5];
+Arrays.fill(arr, 7);
+
+
+✅ Output: [7, 7, 7, 7, 7]
+
+🔹 5. Comparing Arrays
+equals(arr1, arr2)
+
+Returns true if both arrays have same length and same elements.
+
+Example: [1, 2, 3] vs [1, 2, 3] → true.
+
+deepEquals(arr1, arr2)
+
+Same as equals(), but works for multi-dimensional arrays.
+
+🔹 6. Copying Arrays
+copyOf(array, newLength)
+
+Makes a new array copy with the given length.
+
+If the new length is bigger → extra spaces filled with default values (0, null, false).
+
+Example:
+
+int[] arr = {1, 2, 3};
+int[] copy = Arrays.copyOf(arr, 5);
+
+
+✅ Output: [1, 2, 3, 0, 0]
+
+copyOfRange(array, from, to)
+
+Copies part of the array (from inclusive, to exclusive).
+
+Example:
+
+int[] arr = {10, 20, 30, 40, 50};
+int[] sub = Arrays.copyOfRange(arr, 1, 4);
+
+
+✅ Output: [20, 30, 40]
+
+🔹 7. Converting Arrays
+asList(array)
+
+Turns an array into a List (fixed-size).
+
+Example:
+
+String[] names = {"Ali", "Sara", "John"};
+System.out.println(Arrays.asList(names));
+
+
+✅ Output: [Ali, Sara, John]
+
+⚠️ You cannot add/remove elements, but you can update them.
