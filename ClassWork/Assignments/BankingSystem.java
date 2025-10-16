@@ -24,6 +24,10 @@
 
   These values are used to make realProfit() reflect realistic economic data.
 */
+import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Map;
+
 
 abstract class  Account 
 {
@@ -77,7 +81,7 @@ abstract class  Account
         }
         else
         {
-            System.out.println("%s isn't applicable for Zakat ! "+this.accountHolderName);
+            System.out.printf("%s isn't applicable for Zakat ! ",this.accountHolderName);
         }
     }
 
@@ -120,6 +124,7 @@ abstract class  Account
         total += a.realProfit();
         return total;
     }   
+
 
     //Abstract methods will be implemented in the savings and investment class 
 
@@ -220,7 +225,7 @@ class SavingsAccount extends Account
         }
         else
         {
-            profit=profit-(profit*0.25);
+            profit=profit-(profit*0.35);
             System.out.println("Profit for the NON-FILER personnel (after tax)  is : "+profit);
 
         }
@@ -310,7 +315,7 @@ class InvestmentAccount extends Account
             System.out.printf("The account balance after withdrawing %.2f PKR is : %.2f PKR\n",totalWithdrawlCost, this.balance);
         }
     }
-    public double realProfit()
+    public double realProfit(String country, int year)
     {
         // Here 179689 is Nisab
         //0.126 is the Inflation-Rate
@@ -319,11 +324,63 @@ class InvestmentAccount extends Account
         double nominal_profit=this.getTotalEarnings();
         double Zakat=(this.isZakatApplicable && this.balance>179689) ? this.balance*0.025 : 0;
         double tax=(this.isFiler) ? 0.15*nominal_profit : nominal_profit*0.35 ;
-        double inflationLoss=nominal_profit*(this.years*0.126);
-        realisticProfit=nominal_profit-(tax+Zakat+inflationLoss);
+        // get inflation from HashMap instead of hardcoding
+        Map<String, Map<Integer, Double>> inflationMap = InflationData.getInflationData();
+        double inflationRate = 0;
+        if (inflationMap.containsKey(country) && inflationMap.get(country).containsKey(year)) 
+        {
+            inflationRate = inflationMap.get(country).get(year);
+        }
+        double inflationLoss = nominal_profit * inflationRate;        realisticProfit=nominal_profit-(tax+Zakat+inflationLoss);
         return Math.round(realisticProfit * 100.0) / 100.0;
     }
 
+    public void bestInvestment()
+    {
+        
+    }
+
+
+
+}
+//HashMap
+
+
+class InflationData 
+{
+
+    public static Map<String, Map<Integer, Double>> getInflationData() {
+
+        Map<String, Map<Integer, Double>> inflationData = new HashMap<>();
+
+        Map<Integer, Double> pakistan = new HashMap<>();
+        pakistan.put(2018, 0.05);
+        pakistan.put(2019, 0.06);
+        pakistan.put(2020, 0.07);
+        pakistan.put(2021, 0.126);
+        pakistan.put(2022, 0.12);
+
+        Map<Integer, Double> japan = new HashMap<>();
+        japan.put(2018, 0.01);
+        japan.put(2019, 0.005);
+        japan.put(2020, 0.002);
+        japan.put(2021, 0.004);
+        japan.put(2022, 0.01);
+
+        Map<Integer, Double> china = new HashMap<>();
+        china.put(2018, 0.025);
+        china.put(2019, 0.026);
+        china.put(2020, 0.02);
+        china.put(2021, 0.015);
+        china.put(2022, 0.02);
+
+        // Addding to main Map
+        inflationData.put("Pakistan", pakistan);
+        inflationData.put("Japan", japan);
+        inflationData.put("China", china);
+
+        return inflationData;
+    }
 
 
 }
@@ -333,6 +390,8 @@ public class BankingSystem {
     public static void main(String[] args) {
         System.out.println("Hello World");
         System.out.println("=====    WELCOME!    =====");
+
+
         
         // // SavingsAccount s1 = new SavingsAccount(0, "Sannan", 10, 100, false, false);
         // InvestmentAccount i1 = new InvestmentAccount(3, 1, "Ali", 40, 100000, true, true);
@@ -340,11 +399,30 @@ public class BankingSystem {
         // double temp=i1.getTotalEarnings();
         // System.out.println(temp);
         // // i1.withdraw(200);
+        // 1-
 
         //If an earning account type account is created
         //store it in an array and pass it to the static 
         //Account.getTotalProfitPaid() to get all the accounts
 
+        // 2-
+        /*Capital Gain Tax: Your filer/non-filer tax logic is mostly correct; just make non-filer tax consistent between getTotalEarnings() and realProfit().
+
+        InvestmentAccount Profit: Right now it’s simple multiplication; needs compounding for multi-year plans.
+
+        Withdraw Tax: Surcharge & tax are fine; optional: could return boolean/exception instead of just printing.
+
+        deductZakat(): Works, just fix the printf formatting.
+
+        Category Enum: Works, but consider separating SavingsCategory vs InvestmentCategory for clarity.
+
+        getTotalProfit(): Works, can rename to getTotalProfitPaid for clarity.
+
+        Real Profit / Inflation: Use a Map<String, Map<Integer, Double>> for country/year inflation to make it flexible instead of hard-coded Pakistan.
+
+        Main/Test Class: Create 5–7 accounts of all types, print individual earnings & total profit.
+
+        Code Hygiene: Keep indentation clean, avoid printing inside getTotalEarnings() in production, and use meaningful variable names in loops./*
 
       
        
