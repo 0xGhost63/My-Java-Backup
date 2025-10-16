@@ -1,3 +1,30 @@
+/*  
+  References for realProfit() Calculations – SavingsAccount & Investment Accounts (Pakistan 2025)
+  ---------------------------------------------------------------------------
+  • Inflation Rate (2024–2025): ~12.6%  
+    Source: World Bank Data (https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=PK)
+
+  • Zakat Nisab (1445–46 AH / 2025): Rs. 179,689 minimum balance  
+    Source: Business Recorder – “Minimum Nisab fixed at Rs179,689 for Zakat”  
+    (https://www.brecorder.com/news/40350378)
+
+  • Zakat Deduction Policy: Applies only if balance ≥ Nisab; 
+    not applicable on Current Accounts  
+    Source: The Express Tribune – “Zakat deduction on bank accounts for Ramadan 2025”  
+    (https://tribune.com.pk/story/2531282/zakat-deduction-on-bank-accounts-for-ramadan-2025-announced)
+
+  • Withholding Tax on Profit (Savings / Investment Accounts):  
+    - Filer: 15%  
+    - Non-Filer: 35%  
+    Source: TaxationPK Blog – “How to calculate tax on bank profits”  
+    (https://blog.taxationpk.com/how-to-calculate-tax-on-bank-profits/)
+
+  • Zakat Rate: 2.5% (0.025)  
+    Standard religious deduction rate (Government of Pakistan / SBP)
+
+  These values are used to make realProfit() reflect realistic economic data.
+*/
+
 abstract class  Account 
 {
     //Attributes
@@ -31,11 +58,11 @@ abstract class  Account
         if (amount<this.balance)
         {
             this.balance-=amount;
-            System.out.printf("The balance after wihdrawing %f PKR is %f PKR\n",amount,this.balance);
+            System.out.printf("The account balance after wihdrawing %.2f PKR is %.2f PKR\n",amount,this.balance);
         }
         else
         {
-            System.out.printf("Error : Insufficient amount in account ! (%f)PKR\n",this.balance);
+            System.out.printf("Error : Insufficient amount in account ! (%.2f)PKR\n",this.balance);
         }
     }
     
@@ -44,7 +71,7 @@ abstract class  Account
         if (isZakatApplicable)
         {
             double payable=this.balance*0.025;   
-            System.out.printf("The payable amount of zakat is %f PKR on total %f PKR in account",payable,this.balance);
+            System.out.printf("The payable amount of zakat is %.2f PKR on total %.2f PKR in account",payable,this.balance);
             this.balance-=payable;
             System.out.println("Account balance after Zakat deduction is : "+this.balance);
         }
@@ -62,21 +89,42 @@ abstract class  Account
         filer=(isFiler) ? "a Filer" : "NOT a Filer";
         System.out.println("The name of the Account Holder is : "+this.accountHolderName);
         System.out.println("The ID of the account is : "+this.accountId);
-        System.out.printf("The age of Mr./Ms. %s is %hhd\n",this.accountHolderName,this.age);
-        System.out.printf("The account balance is %f PKR",this.balance);
-        System.out.printf("Mr./Ms.%s is ",this.accountHolderName,filer);
-        System.out.printf("Mr./Ms.%s is ",this.accountHolderName,zakat);
+        System.out.printf("The age of Mr./Ms. %s is %d\n",this.accountHolderName,this.age);
+        System.out.printf("The account balance is %f PKR\n",this.balance);
+        System.out.printf("Mr./Ms.%s is %s\n",this.accountHolderName,filer);
+        System.out.printf("Mr./Ms.%s is %s\n",this.accountHolderName,zakat);
 
     }
 
     public void showBalance()
     {
-        System.out.printf("The balance of Mr./Ms %s is %f",this.accountHolderName,this.balance);
+        System.out.printf("The account balance of Mr./Ms %s is %.2f",this.accountHolderName,this.balance);
     }
 
-    //Abstract method will be implemented in the savings and investment class 
+    public static double getTotalProfit(Account [] objArray)
+    {
+        //No need of "instance of" since the method is overloaded
+        double total_profits=0;
+
+        for(int i =0;i<objArray.length;i++)
+        {
+            total_profits+=objArray[i].getTotalEarnings();
+        }
+        return total_profits;
+    }
+
+    public static double getTotalRealProfit(Account[] arr)
+    {   
+        double total = 0;
+        for (Account a : arr)
+        total += a.realProfit();
+        return total;
+    }   
+
+    //Abstract methods will be implemented in the savings and investment class 
 
     public abstract double getTotalEarnings();
+    public abstract double realProfit();
 
 }
 
@@ -97,15 +145,28 @@ class CurrentAccount extends Account
         System.out.println("Current account holders are'nt applicable for earnings !");
         return 0;
     }
+    public double realProfit()
+    {
+        System.out.println("Inapplicable for the Current Account Holders !");
+        return 0;
+    }
+
 
 
 }
 //Enum
 enum Category
     {
+        //Savings Class
         YOUNG_SAVER(6),
         ADULT_SAVER(7),
-        SENIOR_CITIZEN_SAVER(8);
+        SENIOR_CITIZEN_SAVER(8),
+        
+        //Investment Class
+        ONE_YEAR(0.10),
+        THREE_YEAR(0.12),
+        FIVE_YEAR(0.14);
+
 
         //Attribute
         private final double profitRate;
@@ -148,7 +209,6 @@ class SavingsAccount extends Account
 
     }
 
-    @Override
     public double getTotalEarnings() 
     {
         double profit=this.balance*(ageCategory.getProfitRate()/100);
@@ -156,31 +216,137 @@ class SavingsAccount extends Account
         {
             //Profit after tax = profit - (profit * profit %)
             profit=profit-(profit*0.15);
+            System.out.println("Profit for the FILER personnel (after tax) is : "+profit);
         }
         else
         {
             profit=profit-(profit*0.25);
-        }
+            System.out.println("Profit for the NON-FILER personnel (after tax)  is : "+profit);
 
+        }
         return profit;
+
     }    
+
+    public double realProfit()
+    {
+        // Here 179689 is Nisab
+        //0.126 is the Inflation-Rate
+        double realisticProfit=0;
+        double nominal_profit=this.getTotalEarnings();
+        double Zakat=(this.isZakatApplicable && this.balance>179689) ? this.balance*0.025 : 0;
+        double tax=(this.isFiler) ? 0.15*nominal_profit : nominal_profit*0.35 ;
+        double inflationLoss=nominal_profit*0.126;
+        //Calculation Formula
+        realisticProfit=nominal_profit-(tax+Zakat+inflationLoss);
+        return Math.round(realisticProfit * 100.0) / 100.0;
+    }
 }
 
 
 
 
-// // Investment Account
-// class InvestmentAccount extends Account {
+// Investment Account
+class InvestmentAccount extends Account 
+{
 
-// }
+    Category timeCategory;
+    int years;
+
+    InvestmentAccount(int years,int accountId,String accountHolderName,int age,double balance,boolean isZakatApplicable,boolean isFiler)
+    {
+        super(accountId,accountHolderName,age,balance,isZakatApplicable,isFiler);
+        this.years=years;
+        if(this.years>0 && this.years <3)
+        {
+            this.timeCategory=timeCategory.ONE_YEAR;
+        }
+        else if (this.years>=3 && this.years<5)
+        {
+            this.timeCategory=timeCategory.THREE_YEAR;
+        }
+        else
+        {
+            this.timeCategory=timeCategory.FIVE_YEAR;
+        }
+    }
+    public double getTotalEarnings() 
+    {
+        double interestRate = this.timeCategory.getProfitRate(); 
+        double myMoney = this.balance;
+        double totalProfit = 0;
+        System.out.println("==== PROJECTED PROFIT OVER " + this.years + " YEARS ====");
+        for(int year = 0; year < this.years; year++)
+        {
+            double profitThisYear = myMoney * interestRate;
+            totalProfit += profitThisYear;                      
+            myMoney += profitThisYear;
+
+            System.out.printf("Year %d: Profit: %.2f PKR Money for next year: %.2f PKR\n",(year + 1), profitThisYear, myMoney);
+        }
+
+        return totalProfit; 
+    }
+
+    @Override
+    public void  withdraw(double amount) 
+    {
+        double withdrawlTax, totalWithdrawlCost = 0;
+        double surchargeRate = 0.04;
+        double taxRate = this.isFiler ? 0.02 : 0.04;
+        double surcharge = surchargeRate * amount;
+        withdrawlTax = taxRate * amount;
+        totalWithdrawlCost = withdrawlTax+surcharge+amount;
+
+        if (totalWithdrawlCost > this.balance) 
+        {
+            System.out.printf("Error : Insufficient amount in account ! (%.2f)PKR\n", this.balance);
+        }
+        else
+        {
+            this.balance -= totalWithdrawlCost;
+            System.out.printf("%-25s :       %.2f PKR\n%-25s :       %.2f PKR\n%-25s :       %.2f PKR\n%-25s :       %.2f PKR\n",
+            "Tax", withdrawlTax,"Surcharges", surcharge,"Withdrawl Amount", amount,"Total Amount Deducted", totalWithdrawlCost);
+            System.out.printf("The account balance after withdrawing %.2f PKR is : %.2f PKR\n",totalWithdrawlCost, this.balance);
+        }
+    }
+    public double realProfit()
+    {
+        // Here 179689 is Nisab
+        //0.126 is the Inflation-Rate
+        //Applies to all years
+        double realisticProfit=0;
+        double nominal_profit=this.getTotalEarnings();
+        double Zakat=(this.isZakatApplicable && this.balance>179689) ? this.balance*0.025 : 0;
+        double tax=(this.isFiler) ? 0.15*nominal_profit : nominal_profit*0.35 ;
+        double inflationLoss=nominal_profit*(this.years*0.126);
+        realisticProfit=nominal_profit-(tax+Zakat+inflationLoss);
+        return Math.round(realisticProfit * 100.0) / 100.0;
+    }
+
+
+
+}
 
 // Main Class
 public class BankingSystem {
     public static void main(String[] args) {
         System.out.println("Hello World");
-        SavingsAccount s1 = new SavingsAccount(0, "Sannan", 10, 100, false, false);
+        System.out.println("=====    WELCOME!    =====");
+        
+        // // SavingsAccount s1 = new SavingsAccount(0, "Sannan", 10, 100, false, false);
+        // InvestmentAccount i1 = new InvestmentAccount(3, 1, "Ali", 40, 100000, true, true);
+
+        // double temp=i1.getTotalEarnings();
+        // System.out.println(temp);
+        // // i1.withdraw(200);
+
+        //If an earning account type account is created
+        //store it in an array and pass it to the static 
+        //Account.getTotalProfitPaid() to get all the accounts
+
+
       
-        s1.showData();
        
 
     }
