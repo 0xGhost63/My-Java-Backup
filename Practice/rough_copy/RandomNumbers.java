@@ -12,4 +12,4 @@ public class RandomNumbers
         }
         System.out.println();
     }
-}
+}n
