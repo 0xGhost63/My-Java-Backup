@@ -23,7 +23,10 @@
     Standard religious deduction rate (Government of Pakistan / SBP)
 
   These values are used to make realProfit() reflect realistic economic data.
+  All data used is best of my knowledge but I don't guarantee the authencity of it
 */
+
+
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -452,7 +455,7 @@ class InvestmentAccount extends Account
     }
 
 
-    public void bestInvestment(boolean isComparison)
+    public  void bestInvestment(boolean isComparison)
     {
         if(isComparison)
         {
@@ -585,7 +588,7 @@ class InvestmentAccount extends Account
         System.out.printf("Total Potential Profit in %s: %.2f PKR\n", countriresArray.get(countryNumber), countriesProfit.get(countryNumber));
         System.out.printf("Best Year to Invest in %s: %d\n", countriresArray.get(countryNumber), bestTime.get(countryNumber));
 
-        System.out.println("\n=== OVERALL BEST INVESTMENT YEAR+Country ===");
+        System.out.println("\n=== OVERALL BEST INVESTMENT YEAR + COUNTRY ===");
         System.out.printf("Country: %s\n", overallBestCountry);
         System.out.printf("Year: %d\n", overallBestYear);
         System.out.printf("Profit in that year: %.2f PKR\n", overallHighestProfit);
@@ -709,71 +712,88 @@ public class BankingSystem
     public static void main(String[] args) 
     {
 
-        //SAMPLE AI GENERATED OUTPUTS !!!
-        System.out.println("=====    SCNZ & SONS PVT. LTD.    =====");
+        //SAMPLE AI GENERATED OUTPUTS With DUMMY data !!!
+        boolean isOutput=false;
+        System.out.println("Would you like to access the sample output ? ");
+        System.out.print("> (y/n) : ");
+        isOutput=sc.nextLine().trim().equalsIgnoreCase("y");
+        
+        if(isOutput)
+        {
+            System.out.println("\n=====    SCNZ & SONS PVT. LTD.    =====");
 
-        CurrentAccount a1 = new CurrentAccount(1, 1234, "Ali Khan", 50000, false, true);
-        SavingsAccount a2 = new SavingsAccount(2, 4321, "Sara Ahmed", 30, 250000, true, true);
-        InvestmentAccount a3 = new InvestmentAccount(5, 1111, 3, "Usman Tariq", 1000000, true, false);
+            CurrentAccount a1 = new CurrentAccount(1, 1234, "Ali Khan", 50000, false, true);
+            SavingsAccount a2 = new SavingsAccount(2, 4321, "Sara Ahmed", 30, 250000, true, true);
+            InvestmentAccount a3 = new InvestmentAccount(5, 1111, 3, "Usman Tariq", 1000000, true, false);
+            InvestmentAccount inv1 = new InvestmentAccount(3, 1111, 101, "Ali Khan", 500000, true, true);
+            InvestmentAccount inv2 = new InvestmentAccount(4, 2222, 102, "Sara Ahmed", 1000000, false, false);
 
-        // TESTING DEPOSIT 
-        System.out.println("\n--- DEPOSIT TEST ---");
-        a1.deposit(10000);        // Current Account deposit
-        a2.deposit(50000);        // Savings Account deposit
-        a3.deposit(200000);       // Investment Account deposit
 
-        // TESTING WITHDRAW 
-        System.out.println("\n--- WITHDRAW TEST ---");
-        a1.withdraw(5000);
-        a2.withdraw(30000);
-        a3.withdraw(150000);
 
-        //  SHOW ACCOUNT INFO 
-        System.out.println("\n--- SHOW INFO ---");
-        a1.showInfo();
-        a2.showInfo();
-        a3.showInfo();
+            // TESTING DEPOSIT 
+            System.out.println("\n--- DEPOSIT TEST ---");
+            a1.deposit(10000);        // Current Account deposit
+            a2.deposit(50000);        // Savings Account deposit
+            a3.deposit(200000);       // Investment Account deposit
 
-        // SHOW BALANCE 
-        System.out.println("\n--- SHOW BALANCE ---");
-        a1.showBalance(); System.out.println();
-        a2.showBalance(); System.out.println();
-        a3.showBalance(); System.out.println();
+            // TESTING WITHDRAW 
+            System.out.println("\n--- WITHDRAW TEST ---");
+            a1.withdraw(5000);
+            a2.withdraw(30000);
+            a3.withdraw(150000);
 
-        // DEDUCT ZAKAT 
-        System.out.println("\n--- DEDUCT ZAKAT ---");
-        a1.deductZakat(); // should be inapplicable
-        a2.deductZakat(); // applicable
-        a3.deductZakat(); // applicable
+            //  SHOW ACCOUNT INFO 
+            System.out.println("\n--- SHOW INFO ---");
+            a1.showInfo();
+            a2.showInfo();
+            a3.showInfo();
 
-        //  TOTAL EARNING & REAL PROFIT 
-        System.out.println("\n--- TOTAL EARNING & REAL PROFIT ---");
-        System.out.printf("Total earning a1: %.2f\n", a1.getTotalEarning());
-        System.out.printf("Total earning a2: %.2f\n", a2.getTotalEarning());
-        System.out.printf("Total earning a3: %.2f\n", a3.getTotalEarning());
+            // SHOW BALANCE 
+            System.out.println("\n--- SHOW BALANCE ---");
+            a1.showBalance(); System.out.println();
+            a2.showBalance(); System.out.println();
+            a3.showBalance(); System.out.println();
 
-        System.out.printf("Real profit a1: %.2f\n", a1.realProfit());
-        System.out.printf("Real profit a2: %.2f\n", a2.realProfit());
-        // For InvestmentAccount, use country/year version for realistic profit
-        System.out.printf("Real profit a3 (Pakistan 2021): %.2f\n", a3.realProfit("Pakistan", 2021));
+            // DEDUCT ZAKAT 
+            System.out.println("\n--- DEDUCT ZAKAT ---");
+            a1.deductZakat(); // should be inapplicable
+            a2.deductZakat(); // applicable
+            a3.deductZakat(); // applicable
 
-        // 
-        ArrayList<Account> earnings = new ArrayList<>();
-        earnings.add(a2);
-        earnings.add(a3);
+            //  TOTAL EARNING & REAL PROFIT 
+            System.out.println("\n--- TOTAL EARNING & REAL PROFIT ---");
+            System.out.printf("Total earning a1: %.2f\n", a1.getTotalEarning());
+            System.out.printf("Total earning a2: %.2f\n", a2.getTotalEarning());
+            System.out.printf("Total earning a3: %.2f\n", a3.getTotalEarning());
 
-        System.out.println("\n--- TOTAL PROFITS ---");
-        System.out.printf("Total nominal profit (all earning accounts): %.2f PKR\n", Account.getTotalProfit(earnings));
-        System.out.printf("Total real profit (all earning accounts): %.2f PKR\n", Account.getTotalRealProfit(earnings));
+            System.out.printf("Real profit a1: %.2f\n", a1.realProfit());
+            System.out.printf("Real profit a2: %.2f\n", a2.realProfit());
+            // For InvestmentAccount, use country/year version for realistic profit
+            System.out.printf("Real profit a3 (Pakistan 2021): %.2f\n", a3.realProfit("Pakistan", 2021));
 
-        System.out.println("=====    SCNZ & SONS PVT. LTD.    =====");
+            // 
+            ArrayList<Account> earnings = new ArrayList<>();
+            earnings.add(a2);
+            earnings.add(a3);
+
+            //Best Profit : 
+            inv1.bestInvestment();  // Works on inv1’s data
+            inv2.bestInvestment();  // Works on inv2’s data
+
+            System.out.println("\n--- TOTAL PROFITS ---");
+            System.out.printf("Total nominal profit (all earning accounts): %.2f PKR\n", Account.getTotalProfit(earnings));
+            System.out.printf("Total real profit (all earning accounts): %.2f PKR\n", Account.getTotalRealProfit(earnings));
+        }
+
+
+        System.out.println("\n=====    SCNZ & SONS PVT. LTD.    =====");
         
         //array list for saving the earnings accounts that i will pass to the method
         //in Account class to calculate the total profits of all the earning accounts
         ArrayList <Account> earningAccounts = new ArrayList<>();
         ArrayList<Account> accounts = new ArrayList<>();
         boolean exit = false;
-        int accountCounter=62;
+        int accountCounter=63;
 
         while (!exit)
         {
@@ -815,7 +835,7 @@ public class BankingSystem
                         System.out.print("> ");
                         type = sc.nextInt();
                         sc.nextLine();
-                        if (type<1 || type > 4) 
+                        if (type<1 || type > 3) 
                         {
                             System.out.println("Invalid Option Entered ...Try Again plz !");    
                         }
@@ -921,15 +941,15 @@ public class BankingSystem
 
                         } while (accPin!=acc.getPin());
 
-
                     boolean back = false;
                     while (!back) 
                     {
                         System.out.println("\nAccessing account : Mr./Ms." + acc.accountHolderName + " (ID " + acc.accountId + ")");
-                        System.out.println("1-Deposit 2-Withdraw 3-Show Info 4-Show Balance 5-Deduct Zakat 6-Get Total Earning 7-Get Real Profit 8-Back");
+                        System.out.println("1-Deposit 2-Withdraw 3-Show Info 4-Show Balance 5-Deduct Zakat 6-Get Total Earning 7-Get Real Profit 8-Best Investment 9-Back");
                         System.out.print("Choose: ");
                         int achoice = sc.nextInt(); sc.nextLine();
-                        switch (achoice) {
+                        switch (achoice) 
+                        {
                             case 1:
                                 System.out.print("Amount to deposit: ");
                                 double damt = sc.nextDouble(); sc.nextLine();
@@ -957,14 +977,33 @@ public class BankingSystem
                             case 7:
                                 System.out.printf("Real profit: %.2f\n", acc.realProfit());
                                 break;
-                            case 8:
+                            case 8: // Best Investment
+                                if (acc instanceof InvestmentAccount) 
+                                {
+                                    ((InvestmentAccount) acc).bestInvestment();
+                                    System.out.println("Would you like to compare for two countries and years ? ");
+                                    System.out.print("> (y/n) : ");
+                                    boolean isComparison = sc.nextLine().trim().equalsIgnoreCase("y");
+                                    if(isComparison)
+                                    {
+                                        ((InvestmentAccount) acc).bestInvestment(true);  
+                                    }
+                                     
+                                } else 
+                                {
+                                    System.out.println("Best investment option is only available for Investment Accounts!");
+                                }
+                                break;
+                            case 9:
                                 back = true;
                                 break;
                             default:
                                 System.out.println("Invalid option.");
                         }
                     }
-                    break;
+
+
+                    
                 }
 
                 case 3: {
@@ -997,15 +1036,17 @@ public class BankingSystem
                     break;
                 }
 
-                case 6:
-                    exit = true;
+                case 6:  
+                {
+                     exit = true;
                     break;
-
+                }
+            
                 default:
                     System.out.println("Invalid option. Try again.");
             }
         }
-
+                
 
         System.out.println("Thank You :)");
         System.out.printf("%60s\n","FIN !");
