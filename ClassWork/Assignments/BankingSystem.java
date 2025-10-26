@@ -15,7 +15,7 @@
 
   • Withholding Tax on Profit (Savings / Investment Accounts):  
     - Filer: 15%  
-    - Non-Filer: 35%  
+    - Non-Filer: 25%  
     Source: TaxationPK Blog – “How to calculate tax on bank profits”  
     (https://blog.taxationpk.com/how-to-calculate-tax-on-bank-profits/)
 
@@ -25,8 +25,6 @@
   These values are used to make realProfit() reflect realistic economic data.
 */
 import java.util.Scanner;
-import java.lang.classfile.instruction.ConstantInstruction.IntrinsicConstantInstruction;
-import java.security.KeyStore.Entry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,17 +35,17 @@ abstract class  Account
     //Attributes
     protected int accountId;
     protected String accountHolderName;
-    protected int age;
     protected double balance;
     protected boolean isZakatApplicable;
     protected boolean isFiler;
+    private int pin;
 
     //Construtor
-    Account(int accountId,String accountHolderName,int age,double balance,boolean isZakatApplicable,boolean isFiler)
+    Account(int accountId,int pin,String accountHolderName,double balance,boolean isZakatApplicable,boolean isFiler)
     {
         this.accountId=accountId;
+        setPin(this.pin);
         this.accountHolderName=accountHolderName;
-        this.age=age;
         this.balance=balance;
         this.isZakatApplicable=isZakatApplicable;
         this.isFiler=isFiler;
@@ -56,16 +54,30 @@ abstract class  Account
     //Methods !
     public void deposit(double amount)
     {
-        this.balance+=amount;
-        System.out.println("The balance after deposit is : "+this.balance);
+        if (amount>0)
+        {
+            this.balance+=amount;
+            System.out.println("The balance after deposit is : "+this.balance);
+        }
+        else
+        {
+            System.out.println("Invalid Amount (Deposit amount can't be less thar 0 PKR)");
+        }
     }
 
     public void withdraw(double amount) // to be overridden
     {
+
+        double withdrawTax;
+        withdrawTax=(isFiler) ? 0.02*amount : 0.04*amount;
+        amount+=withdrawTax;
         if (amount<this.balance)
         {
             this.balance-=amount;
-            System.out.printf("The account balance after wihdrawing %.2f PKR is %.2f PKR\n",amount,this.balance);
+            System.out.printf("The account balance after wihdrawing %.2f PKR with %.2f PKR withdrawl tax is %.2f PKR\n",amount,withdrawTax,this.balance);
+            System.out.println("Balance : "+this.balance);
+            System.out.println("Amount withdrawn : "+amount);
+            System.out.println("Withdrawl Tax : "+withdrawTax);
         }
         else
         {
@@ -96,7 +108,6 @@ abstract class  Account
         filer=(isFiler) ? "a Filer" : "NOT a Filer";
         System.out.println("The name of the Account Holder is : "+this.accountHolderName);
         System.out.println("The ID of the account is : "+this.accountId);
-        System.out.printf("The age of Mr./Ms. %s is %d\n",this.accountHolderName,this.age);
         System.out.printf("The account balance is %f PKR\n",this.balance);
         System.out.printf("Mr./Ms.%s is %s\n",this.accountHolderName,filer);
         System.out.printf("Mr./Ms.%s is %s\n",this.accountHolderName,zakat);
@@ -108,30 +119,41 @@ abstract class  Account
         System.out.printf("The account balance of Mr./Ms %s is %.2f",this.accountHolderName,this.balance);
     }
 
-    public static double getTotalProfit(Account [] objArray)
+
+    //No need of "instance of" since the method is overloaded
+    public static double getTotalProfit(ArrayList<Account> accounts)
     {
-        //No need of "instance of" since the method is overloaded
-        double total_profits=0;
-
-        for(int i =0;i<objArray.length;i++)
+        double totalProfits = 0;
+        for (Account acc : accounts)
         {
-            total_profits+=objArray[i].getTotalEarnings();
+            totalProfits += acc.getTotalEarning();
         }
-        return total_profits;
+        return totalProfits;
     }
+   
 
-    public static double getTotalRealProfit(Account[] arr)
+    public static double getTotalRealProfit(ArrayList <Account> arr)
     {   
         double total = 0;
         for (Account a : arr)
         total += a.realProfit();
+
         return total;
     }   
 
+    //getters setters for the pin
+
+    public void setPin(int pin) {
+        this.pin = pin;
+    }
+
+    public int getPin() {
+        return pin;
+    }
 
     //Abstract methods will be implemented in the savings and investment class 
 
-    public abstract double getTotalEarnings();
+    public abstract double getTotalEarning();
     public abstract double realProfit();
 
 }
@@ -142,13 +164,13 @@ class CurrentAccount extends Account
     //All attributes are same as that of the parent class
 
     //Constructor
-    CurrentAccount(int accountId,String accountHolderName,int age,double balance,boolean isZakatApplicable,boolean isFiler)
+    CurrentAccount(int accountId,int pin,String accountHolderName,double balance,boolean isZakatApplicable,boolean isFiler)
     {
-        super(accountId,accountHolderName,age,balance,isZakatApplicable,isFiler);
+        super(accountId,pin,accountHolderName,balance,isZakatApplicable,isFiler);
     }
 
     //Methods
-    public double getTotalEarnings()
+    public double getTotalEarning()
     {
         System.out.println("Current account holders are'nt applicable for earnings !");
         return 0;
@@ -159,7 +181,27 @@ class CurrentAccount extends Account
         return 0;
     }
 
+    @Override
+    public void withdraw(double amount) 
+    {
 
+        //Special Withdrawl Tax for the Current 
+        double withdrawTax=0.1*amount;
+        amount+=withdrawTax;
+
+        if (amount<this.balance)
+        {
+            this.balance-=amount;
+            System.out.printf("The account balance after wihdrawing %.2f PKR with %.2f PKR withdrawl tax is %.2f PKR\n",amount,withdrawTax,this.balance);
+            System.out.println("Balance : "+this.balance);
+            System.out.println("Amount withdrawn : "+amount);
+            System.out.println("Withdrawl Tax : "+withdrawTax);
+        }
+        else
+        {
+            System.out.printf("Error : Insufficient amount in account ! (%.2f)PKR\n",this.balance);
+        }
+    }
 
 }
 
@@ -168,16 +210,19 @@ class SavingsAccount extends Account
 {
     //Additionl Attributes
     Category ageCategory;
+    int age;
 
     //Constructor :
-    SavingsAccount(int accountId,String accountHolderName,int age,double balance,boolean isZakatApplicable,boolean isFiler)
+    SavingsAccount(int accountId,int pin,String accountHolderName,int age,double balance,boolean isZakatApplicable,boolean isFiler)
     {
-        super(accountId,accountHolderName, age, balance, isZakatApplicable, isFiler);
-        if (age<35)
+
+        super(accountId,pin,accountHolderName,balance, isZakatApplicable, isFiler);
+        this.age=age;
+        if (this.age<35)
         {
             this.ageCategory=ageCategory.YOUNG_SAVER;
         }
-        else if(age<=50)
+        else if(this.age<=50)
         {
             this.ageCategory=ageCategory.ADULT_SAVER;
         }
@@ -186,10 +231,10 @@ class SavingsAccount extends Account
             this.ageCategory=ageCategory.SENIOR_CITIZEN_SAVER;
         }
 
-
     }
 
-    public double getTotalEarnings() 
+    @Override
+    public double getTotalEarning() 
     {
         double profit=this.balance*(ageCategory.getProfitRate()/100);
         if(isFiler)
@@ -200,27 +245,28 @@ class SavingsAccount extends Account
         }
         else
         {
-            profit=profit-(profit*0.35);
+            profit=profit-(profit*0.25);
             System.out.println("Profit for the NON-FILER personnel (after tax)  is : "+profit);
 
         }
         return profit;
-
     }    
 
+    @Override
     public double realProfit()
     {
-        // Here 179689 is Nisab
-        //0.126 is the Inflation-Rate
         double realisticProfit=0;
-        double nominal_profit=this.getTotalEarnings();
+        double nominal_profit=this.getTotalEarning();
         double Zakat=(this.isZakatApplicable && this.balance>179689) ? this.balance*0.025 : 0;
-        double tax=(this.isFiler) ? 0.15*nominal_profit : nominal_profit*0.35 ;
+        double tax=(this.isFiler) ? 0.15*nominal_profit : nominal_profit*0.25 ;
         double inflationLoss=nominal_profit*0.126;
+
         //Calculation Formula
         realisticProfit=nominal_profit-(tax+Zakat+inflationLoss);
         return Math.round(realisticProfit * 100.0) / 100.0;
     }
+
+  
 }
 
 // Investment Account
@@ -229,10 +275,12 @@ class InvestmentAccount extends Account
 
     Category timeCategory;
     int years;
+    private static final double CAPITAL_GAIN_TAX = 0.15; 
 
-    InvestmentAccount(int years,int accountId,String accountHolderName,int age,double balance,boolean isZakatApplicable,boolean isFiler)
+
+    InvestmentAccount(int years,int pin,int accountId,String accountHolderName,double balance,boolean isZakatApplicable,boolean isFiler)
     {
-        super(accountId,accountHolderName,age,balance,isZakatApplicable,isFiler);
+        super(accountId,pin,accountHolderName,balance,isZakatApplicable,isFiler);
         this.years=years;
         if(this.years>0 && this.years <3)
         {
@@ -247,9 +295,15 @@ class InvestmentAccount extends Account
             this.timeCategory=timeCategory.FIVE_YEAR;
         }
     }
+
+    // getter for the Capital gain TAx.
+
+    public static double getCapitalGainTax() {
+        return CAPITAL_GAIN_TAX;
+    }
     //Only returns the total profit/returnings also fulfills the abstract class demand
     @Override
-    public double getTotalEarnings() 
+    public double getTotalEarning() 
     {
         double interestRate = this.timeCategory.getProfitRate(); 
         double myMoney = this.balance;
@@ -261,29 +315,31 @@ class InvestmentAccount extends Account
             myMoney += profitThisYear;
             
         }
+        totalProfit = totalProfit-(totalProfit*getCapitalGainTax());
         return totalProfit; 
     }
 
     //Prints the projected profit for the number of years as well
-    public double getTotalEarnings(boolean shouldPrint) 
+    //..Extra function added by myself
+    public void projectedgetTotalEarning() 
     {
         double interestRate = this.timeCategory.getProfitRate(); 
         double myMoney = this.balance;
         double totalProfit = 0;
-        if(shouldPrint)
+        double CGT=getCapitalGainTax();
+
+        System.out.println("==== PROJECTED PROFIT OVER " + this.years + " YEARS ====");
+        for(int year = 0; year < this.years; year++)
         {
-            System.out.println("==== PROJECTED PROFIT OVER " + this.years + " YEARS ====");
-            for(int year = 0; year < this.years; year++)
-            {
-                double profitThisYear = myMoney * interestRate;
-                totalProfit += profitThisYear;                      
-                myMoney += profitThisYear;
-
-                System.out.printf("Year %d: Profit: %.2f PKR Money for next year: %.2f PKR\n",(year + 1), profitThisYear, myMoney);
-            }
-
+            double profitThisYear = myMoney * interestRate;
+            totalProfit += profitThisYear;                      
+            myMoney += profitThisYear;
+            System.out.printf("Year %d: Profit: %.2f PKR Money for next year: %.2f PKR\n",(year + 1), profitThisYear, myMoney);
         }
-        return totalProfit; 
+        totalProfit=totalProfit-(totalProfit*CGT);
+        System.out.println("===     TOTAL PROFIT     ===\n");
+        System.out.printf("%.2f PKR",totalProfit);
+
     }
 
     @Override
@@ -310,6 +366,7 @@ class InvestmentAccount extends Account
     }
     
     //nessary to implement this function as it is the part of the abstraction class
+    @Override
     public double realProfit() 
     {
         Map <String,Map<Integer,Double>> dataMap=InflationData.getInflationData();
@@ -319,6 +376,7 @@ class InvestmentAccount extends Account
         double result=0;
 
         //Iterating Over the HashMap
+        System.out.println("For the calculation of real profit you have to give the country of residence & year...");
         System.out.print("\nAvailable options of countries are : ");
         for (String key : dataMap.keySet() )
         {
@@ -348,9 +406,9 @@ class InvestmentAccount extends Account
     {
 
         double realisticProfit=0;
-        double nominal_profit=this.getTotalEarnings();
+        double nominal_profit=this.getTotalEarning();
         double Zakat=(this.isZakatApplicable && this.balance>179689) ? this.balance*0.025 : 0;
-        double tax=(this.isFiler) ? 0.15*nominal_profit : nominal_profit*0.35 ;
+        double tax=(this.isFiler) ? 0.15*nominal_profit : nominal_profit*0.25 ;
         // getting inflation from HashMap 
         Map<String, Map<Integer, Double>> inflationMap = InflationData.getInflationData();
         double inflationRate = 0;
@@ -401,7 +459,7 @@ class InvestmentAccount extends Account
 
             System.out.printf("Enter the second country : ");
             country_2=BankingSystem.sc.nextLine();
-            while(!dataMap.containsKey(country_2))
+            while(!dataMap.containsKey(country_2) || country_2.equalsIgnoreCase(country_1))
             {
                 System.out.printf("Invalid country ! Please try again : ");
                 country_2=BankingSystem.sc.nextLine();
@@ -413,7 +471,7 @@ class InvestmentAccount extends Account
 
             profit_1=realProfit(country_1,year_1);
             profit_2=realProfit(country_2,year_2);
-            System.out.println("STATISTICS : ");
+            System.out.printf("%60s\n","====      STATISTICS      ====");
             System.out.printf("Profit in %s in %d is : %.2f PKR\n",country_1,year_1,profit_1);
             System.out.printf("Profit in %s in year %d is : %.2f PKR\n",country_2,year_2,profit_2);
             System.out.println("Hence : ");
@@ -492,23 +550,17 @@ class InvestmentAccount extends Account
             }
         }
 
-        // Print results
         System.out.println("\n===== BEST INVESTMENT REPORT =====");
         System.out.printf("Best Country: %s\n", countriresArray.get(countryNumber));
         System.out.printf("Total Potential Profit in %s: %.2f PKR\n", countriresArray.get(countryNumber), countriesProfit.get(countryNumber));
         System.out.printf("Best Year to Invest in %s: %d\n", countriresArray.get(countryNumber), bestTime.get(countryNumber));
 
-        // Overall best year across all countries
-        System.out.println("\n=== OVERALL BEST INVESTMENT YEAR ===");
+        System.out.println("\n=== OVERALL BEST INVESTMENT YEAR+Country ===");
         System.out.printf("Country: %s\n", overallBestCountry);
         System.out.printf("Year: %d\n", overallBestYear);
         System.out.printf("Profit in that year: %.2f PKR\n", overallHighestProfit);
 
     }
-
-
-
-
 
 }
 //HashMap
@@ -517,7 +569,8 @@ class InvestmentAccount extends Account
 class InflationData 
 {
 
-    public static Map<String, Map<Integer, Double>> getInflationData() {
+    public static Map<String, Map<Integer, Double>> getInflationData() 
+    {
 
         Map<String, Map<Integer, Double>> inflationData = new HashMap<>();
 
@@ -542,10 +595,46 @@ class InflationData
         china.put(2021, 0.015);
         china.put(2022, 0.02);
 
+        Map<Integer, Double> usa = new HashMap<>();
+        usa.put(2018, 0.024);     
+        usa.put(2019, 0.018); 
+        usa.put(2020, 0.012); 
+        usa.put(2021, 0.047); 
+        usa.put(2022, 0.080); 
+
+
+        Map <Integer,Double> india = new HashMap<>();
+        india.put(2018,0.044);
+        india.put(2019,0.057);
+        india.put(2020, 0.066);  
+        india.put(2021, 0.050);  
+        india.put(2022, 0.070);  
+
+
+
+        Map<Integer, Double> germany = new HashMap<>();
+        germany.put(2018, 0.019);
+        germany.put(2019, 0.014);   
+        germany.put(2020, 0.004);   
+        germany.put(2021, 0.032);   
+        germany.put(2022, 0.087);   
+
+        Map<Integer, Double> lebanon = new HashMap<>();
+        lebanon.put(2018, 0.108);   
+        lebanon.put(2019, 0.114);   
+        lebanon.put(2020, 0.849);   
+        lebanon.put(2021, 1.548);   
+        lebanon.put(2022, 1.712);   
+
+
         // Addding to main Map
         inflationData.put("Pakistan", pakistan);
         inflationData.put("Japan", japan);
         inflationData.put("China", china);
+        inflationData.put("USA",usa);
+        inflationData.put("Germany", germany);
+        inflationData.put("India", india);
+        inflationData.put("Lebanon", lebanon);
 
         return inflationData;
     }
@@ -586,107 +675,247 @@ public class BankingSystem
 {
     //Scanner Object Creation
     public static final Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) 
     {
 
         System.out.println("Hello World");
-        System.out.println("=====    WELCOME!    =====");
-        // Sample accounts and summary
-
-        InvestmentAccount i1 = new InvestmentAccount(3, 204, "Ali", 40, 100000.0, true, true);
-        i1.bestInvestment();
-        double realProfit=i1.realProfit();
-        System.out.println("Real profit : "+realProfit);
-        realProfit=i1.realProfit("Pakistan",2020);
-        System.out.println("Real profit : "+realProfit);
+        System.out.println("=====    SCNZ & SONS PVT. LTD.    =====");
         
-        // i1.realProfit("Pakistan",2019);
-        // InvestmentAccount.bestInvestment();
+        //array list for saving the earnings accounts that i will pass to the method
+        //in Account class to calculate the total profits of all the earning accounts
+        ArrayList <Account> earningAccounts = new ArrayList<>();
+        ArrayList<Account> accounts = new ArrayList<>();
+        boolean exit = false;
+        int accountCouter=1;
+
+        while (!exit)
+        {
+            System.out.println("\n===== BANKING SYSTEM MENU =====");
+            System.out.println("1- Create Account");
+            System.out.println("2- Access Account");
+            System.out.println("3- List Accounts");
+            System.out.println("4- Total Nominal Profit (all accounts)");
+            System.out.println("5- Total Real Profit (all accounts)");
+            System.out.println("6- Exit");
+            System.out.print("Enter an option: ");
+            int choice;
+            try 
+            {
+                choice = sc.nextInt();
+            }
+            catch (Exception e) 
+            {
+                sc.nextLine();
+                System.out.println("Invalid input !! Try again.");
+                continue;
+            }
+            sc.nextLine(); 
+
+            switch (choice)
+            {
+                case 1: 
+                {
+                    System.out.println("Select account type:-");
+                    System.out.println("1-Current");
+                    System.out.println("2-Savings");
+                    System.out.print("3-Investment\n");
+                    System.out.print("> ");
+                    int type = sc.nextInt();
+                    sc.nextLine();
+
+                    System.out.printf("Account ID : %02d (system assigned)\n",accountCouter);
+                    int id=accountCouter;
+                    int pin, pinConfirm;                      
+                    do
+                    {
+                        System.out.print("PIN (int) : ");
+                        pin = sc.nextInt();
+                        sc.nextLine();
+                    
+                        System.out.print("Re-enter PIN to confirm : ");
+                        pinConfirm = sc.nextInt();
+                        sc.nextLine();
+                    
+                        if (pin != pinConfirm)
+                        {
+                            System.out.println("Try again !");
+                        }
+                    
+                    } while (pin != pinConfirm);
+
+
+                    System.out.print("Enter Account Holder Name : ");
+                    String name = sc.nextLine();
+                    System.out.print("Initial balance : ");
+                    double balance = sc.nextDouble(); sc.nextLine();
+                    System.out.print("Is zakat applicable? (y/n) : ");
+                    boolean zakat = sc.nextLine().trim().equalsIgnoreCase("y");
+                    System.out.print("Is filer? (y/n): ");
+                    boolean filer = sc.nextLine().trim().equalsIgnoreCase("y");
+
+                    if (type == 1) 
+                    {
+                        accounts.add(new CurrentAccount(id, pin, name,balance, zakat, filer));
+                        continue;
+                    } 
+                    else if (type == 2) 
+                    {
+                        System.out.print("Age : ");
+                        int age = sc.nextInt(); 
+                        sc.nextLine();
+                        accounts.add(new SavingsAccount(id, pin, name, age, balance, zakat, filer));
+                        earningAccounts.add(new SavingsAccount(id, pinConfirm, name, age, balance, zakat, filer));
+                    } 
+                    else if (type == 3) 
+                    {
+                        System.out.print("Investment duration in years : ");
+                        int years = sc.nextInt(); 
+                        sc.nextLine();
+                        accounts.add(new InvestmentAccount(years, pin, id, name,balance, zakat, filer));
+                        earningAccounts.add(new InvestmentAccount(years, pinConfirm, accountCouter, name, balance, zakat, filer));
+                    } 
+                    else 
+                    {
+                        System.out.println("Unknown account type ! Skipping creation....");
+                    }
+                    System.out.println("Account created successfully !");
+                    accountCouter++;
+                    break;
+                }
+
+                case 2: 
+                {
+                    if (accounts.isEmpty()) 
+                    {
+                        System.out.println("No accounts created yett !");
+                        break;
+                    }
+
+                    System.out.print("Enter Account ID to access : ");
+                    int accID = sc.nextInt(); sc.nextLine();
+
+                    Account acc = null;
+
+                    for (int i = 0;i<accounts.size();i++) 
+                        if (accounts.get(i).accountId == accID) 
+                        { 
+                            acc = accounts.get(i); 
+                            
+                            break; 
+                        }
+                        if (acc == null) 
+                        {
+                            System.out.println("Account not found.");
+                            break;
+                        }
+
+                        int accPin=0;
+                        do 
+                        {
+                            System.out.print("Enter your pin : ");
+                            sc.nextInt();
+                            if (accPin!=acc.getPin())
+                            {
+                                System.out.printf("Invalid pin for account # %d ...Try Again !\n",acc.accountId);
+                            }
+
+                        } while (accPin!=acc.getPin());
+
+
+                    boolean back = false;
+                    while (!back) 
+                    {
+                        System.out.println("\nAccessing account : Mr./Ms." + acc.accountHolderName + " (ID " + acc.accountId + ")");
+                        System.out.println("1-Deposit 2-Withdraw 3-Show Info 4-Show Balance 5-Deduct Zakat 6-Get Total Earning 7-Get Real Profit 8-Back");
+                        System.out.print("Choose: ");
+                        int achoice = sc.nextInt(); sc.nextLine();
+                        switch (achoice) {
+                            case 1:
+                                System.out.print("Amount to deposit: ");
+                                double damt = sc.nextDouble(); sc.nextLine();
+                                acc.deposit(damt);
+                                break;
+                            case 2:
+                                System.out.print("Amount to withdraw: ");
+                                double wamt = sc.nextDouble(); sc.nextLine();
+                                acc.withdraw(wamt);
+                                break;
+                            case 3:
+                                acc.showInfo();
+                                break;
+                            case 4:
+                                acc.showBalance();
+                                System.out.println();
+                                break;
+                            case 5:
+                                acc.deductZakat();
+                                System.out.println();
+                                break;
+                            case 6:
+                                System.out.printf("Total earning: %.2f\n", acc.getTotalEarning());
+                                break;
+                            case 7:
+                                System.out.printf("Real profit: %.2f\n", acc.realProfit());
+                                break;
+                            case 8:
+                                back = true;
+                                break;
+                            default:
+                                System.out.println("Invalid option.");
+                        }
+                    }
+                    break;
+                }
+
+                case 3: {
+                    if (accounts.isEmpty()) 
+                    {
+                        System.out.println("No accounts to list.");
+                    } 
+                    else 
+                    {
+                        System.out.println("Existing accounts:");
+                        for (Account a : accounts) 
+                        {
+                            System.out.printf("ID: %d | Name: %s | Type: %s | Balance: %.2f\n",
+                            a.accountId, a.accountHolderName, a.getClass().getSimpleName(), a.balance);
+                        }
+                    }
+                    break;
+                }
+
+                case 4: 
+                {
+                    System.out.printf("Total nominal profit (all accounts): %.2f\n", Account.getTotalProfit(accounts));
+                    break;
+                }
+
+                case 5: 
+                {
+                    System.out.println("Calculating total REAL profit for all accounts. Investment accounts may prompt for country/year.");
+                    System.out.printf("Total real profit (all accounts): %.2f\n", Account.getTotalRealProfit(accounts));
+                    break;
+                }
+
+                case 6:
+                    exit = true;
+                    break;
+
+                default:
+                    System.out.println("Invalid option. Try again.");
+            }
+        }
+
+
+        System.out.println("Thank You :)");
+        System.out.printf("%60s\n","FIN !");
+
+
 
 
         sc.close();
 
-        // FORMAT THE AMOUNTS !
-
-
-
-        
-        // // SavingsAc        Map<String , Map<String,Integer> Data = new HashMap<>();
-        // Data=InflationData.getInflationData();
-        // System.out.println(Data);count s1 = new SavingsAccount(0, "Sannan", 10, 100, false, false);
-        // InvestmentAccount i1 = new InvestmentAccount(3, 1, "Ali", 40, 100000, true, true);
-
-        // double temp=i1.getTotalEarnings();
-        // System.out.println(temp);
-        // // i1.withdraw(200);
-        // 1-
-
-        //If an earning account type account is created
-        //store it in an array and pass it to the static 
-        //Account.getTotalProfitPaid() to get all the accounts
-
-        // 2-
-        /*⚠️ Leftovers / Changes needed
-            
-        Capital gain tax fix
-            
-        Non-filer earnings tax for getTotalEarnings() should be 25% (currently 35%)
-            
-        Filer earnings tax remains 15% ✔
-            
-        Non-filer withdrawal tax → 4% (currently only InvestmentAccount implemented)
-            
-        Filer withdrawal tax → 2%
-            
-        Withdrawal tax for SavingsAccount
-            
-        Right now only InvestmentAccount applies it
-            
-        Needs to be implemented for SavingsAccount too
-            
-        Remove print statements from calculation methods
-            
-        getTotalEarnings() should return value only, no printing
-            
-        Move prints to main/test class
-            
-        Add 7 countries to inflation data
-            
-        Current: Pakistan, Japan, China
-            
-        Assignment wants: Pakistan, Japan, China, Lebanon + 3 others
-            
-        Inflation rates for 2018–2022 must be included
-            
-        Implement getRealProfitRatio()
-            
-        Returns actual profit percentage after tax, zakat, inflation
-            
-        Currently you return absolute realProfit amount
-            
-        Test class / main method updates
-            
-        Create 7 InvestmentAccount objects (2018, 5-year plan, different countries)
-            
-        Print each account’s earnings & real profit ratio
-            
-        Determine best country for long-term investment
-            
-        Consistency / minor fixes
-            
-        duration_1, duration_2 in bestInvestment(boolean) are unused → remove
-            
-        Variable naming (countriresArray typo) → fix
-            
-        Minor formatting issues in printf
-            
-        realProfit() in SavingsAccount doesn’t take country/year → optional to extend for uniformity
-            
-        Optional / bonus
-            
-        Ensure future inflation data can be added without code changes
-            
-        All earning accounts handle reinvestment via deposit(profit) (already works)*/
 
       
        
