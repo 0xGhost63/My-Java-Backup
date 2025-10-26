@@ -70,14 +70,14 @@ abstract class  Account
 
         double withdrawTax;
         withdrawTax=(isFiler) ? 0.02*amount : 0.04*amount;
-        amount+=withdrawTax;
-        if (amount<this.balance)
+        double totalWithdrawlCost=amount+withdrawTax;
+        if (totalWithdrawlCost<this.balance)
         {
             this.balance-=amount;
             System.out.printf("The account balance after wihdrawing %.2f PKR with %.2f PKR withdrawl tax is %.2f PKR\n",amount,withdrawTax,this.balance);
-            System.out.println("Balance : "+this.balance);
-            System.out.println("Amount withdrawn : "+amount);
-            System.out.println("Withdrawl Tax : "+withdrawTax);
+            System.out.println("====    RECEIPT    ====");
+            System.out.printf("%-25s :       %.2f PKR\n%-25s :       %.2f PKR\n%-25s :       %.2f PKR\n%-25s :       %.2f PKR\n",
+            "Account Balance",this.balance,"Withdrawl Tax",withdrawTax,"Withdrawl Amount", amount,"Total Amount Deducted", totalWithdrawlCost);
         }
         else
         {
@@ -90,9 +90,9 @@ abstract class  Account
         if (isZakatApplicable)
         {
             double payable=this.balance*0.025;   
-            System.out.printf("The payable amount of zakat is %.2f PKR on total %.2f PKR in account",payable,this.balance);
+            System.out.printf("The payable amount of zakat is %.2f PKR on total %.2f PKR in account\n",payable,this.balance);
             this.balance-=payable;
-            System.out.println("Account balance after Zakat deduction is : "+this.balance);
+            System.out.printf("Account balance after Zakat deduction is : %.2f PKR",this.balance);
         }
         else
         {
@@ -104,11 +104,12 @@ abstract class  Account
     public void showInfo()
     {
         String filer,zakat;
-        zakat=(isZakatApplicable) ? "applicable for Zakat" : "NOT applicable for Zakat";
+        zakat=(isZakatApplicable) ? "APPLICABLE for Zakat" : "NOT APLLICABLE for Zakat";
         filer=(isFiler) ? "a Filer" : "NOT a Filer";
-        System.out.println("The name of the Account Holder is : "+this.accountHolderName);
-        System.out.println("The ID of the account is : "+this.accountId);
-        System.out.printf("The account balance is %f PKR\n",this.balance);
+        System.out.println("\n====    ACCOUNT HOLDER'S DATA    ====");
+        System.out.printf("The name of the Account Holder is : Mr./Ms. %s",this.accountHolderName);
+        System.out.printf("The ID of the account is : %02d\n",this.accountId);
+        System.out.printf("The account balance is %.2f PKR\n",this.balance);
         System.out.printf("Mr./Ms.%s is %s\n",this.accountHolderName,filer);
         System.out.printf("Mr./Ms.%s is %s\n",this.accountHolderName,zakat);
 
@@ -116,7 +117,7 @@ abstract class  Account
 
     public void showBalance()
     {
-        System.out.printf("The account balance of Mr./Ms %s is %.2f",this.accountHolderName,this.balance);
+        System.out.printf("The account balance of Mr./Ms %s is %.2f PKR",this.accountHolderName,this.balance);
     }
 
 
@@ -161,7 +162,7 @@ abstract class  Account
 // Current Account
 class CurrentAccount extends Account 
 {
-    //All attributes are same as that of the parent class
+    //Almost All attributes are same as that of the parent class
 
     //Constructor
     CurrentAccount(int accountId,int pin,String accountHolderName,double balance,boolean isZakatApplicable,boolean isFiler)
@@ -187,15 +188,15 @@ class CurrentAccount extends Account
 
         //Special Withdrawl Tax for the Current 
         double withdrawTax=0.1*amount;
-        amount+=withdrawTax;
+        double totalWithdrawlCost=amount+withdrawTax;
 
-        if (amount<this.balance)
+        if (totalWithdrawlCost<this.balance)
         {
-            this.balance-=amount;
+            this.balance-=totalWithdrawlCost;
             System.out.printf("The account balance after wihdrawing %.2f PKR with %.2f PKR withdrawl tax is %.2f PKR\n",amount,withdrawTax,this.balance);
-            System.out.println("Balance : "+this.balance);
-            System.out.println("Amount withdrawn : "+amount);
-            System.out.println("Withdrawl Tax : "+withdrawTax);
+            System.out.println("====    RECEIPT    ====");
+            System.out.printf("%-25s :       %.2f PKR\n%-25s :       %.2f PKR\n%-25s :       %.2f PKR\n%-25s :       %.2f PKR\n",
+            "Account Balance", this.balance,"Withdrawl Tax",withdrawTax,"Withdrawl Amount", amount,"Total Amount Deducted", totalWithdrawlCost);
         }
         else
         {
@@ -234,6 +235,22 @@ class SavingsAccount extends Account
     }
 
     @Override
+    public void showInfo()
+    {
+        String filer,zakat;
+        zakat=(isZakatApplicable) ? "APPLICABLE for Zakat" : "NOT APLLICABLE for Zakat";
+        filer=(isFiler) ? "a Filer" : "NOT a Filer";
+        System.out.println("\n====    ACCOUNT HOLDER'S DATA    ====");
+        System.out.printf("The name of the Account Holder is : Mr./Ms. %s\n",this.accountHolderName);
+        System.out.printf("The ID of the account is : %02d\n",this.accountId);
+        System.out.printf("The age of Mr./Ms. %s is : %d\n",this.accountHolderName,this.age);
+        System.out.printf("The account balance is %.2f PKR\n",this.balance);
+        System.out.printf("Mr./Ms.%s is %s\n",this.accountHolderName,filer);
+        System.out.printf("Mr./Ms.%s is %s\n",this.accountHolderName,zakat);
+
+    }
+
+    @Override
     public double getTotalEarning() 
     {
         double profit=this.balance*(ageCategory.getProfitRate()/100);
@@ -241,13 +258,10 @@ class SavingsAccount extends Account
         {
             //Profit after tax = profit - (profit * profit %)
             profit=profit-(profit*0.15);
-            System.out.println("Profit for the FILER personnel (after tax) is : "+profit);
         }
         else
         {
             profit=profit-(profit*0.25);
-            System.out.println("Profit for the NON-FILER personnel (after tax)  is : "+profit);
-
         }
         return profit;
     }    
@@ -296,6 +310,21 @@ class InvestmentAccount extends Account
         }
     }
 
+    @Override
+    public void showInfo()
+    {
+        String filer,zakat;
+        zakat=(isZakatApplicable) ? "APPLICABLE for Zakat" : "NOT APLLICABLE for Zakat";
+        filer=(isFiler) ? "a Filer" : "NOT a Filer";
+        System.out.println("\n====    ACCOUNT HOLDER'S DATA    ====");
+        System.out.println("The name of the Account Holder is : "+this.accountHolderName);
+        System.out.printf("The ID of the account is : %02d\n",this.accountId);
+        System.out.printf("Mr./Ms. %s is investing for %d years\n",this.accountHolderName,this.years);
+        System.out.printf("The account balance is %.2f PKR\n",this.balance);
+        System.out.printf("Mr./Ms.%s is %s\n",this.accountHolderName,filer);
+        System.out.printf("Mr./Ms.%s is %s\n",this.accountHolderName,zakat);
+
+    }
     // getter for the Capital gain TAx.
 
     public static double getCapitalGainTax() {
@@ -359,9 +388,10 @@ class InvestmentAccount extends Account
         else
         {
             this.balance -= totalWithdrawlCost;
+            System.out.printf("The account balance after withdrawing %.2f PKR is : %.2f PKR\n",totalWithdrawlCost, this.balance);
+            System.out.println("====    RECEIPT    ====");
             System.out.printf("%-25s :       %.2f PKR\n%-25s :       %.2f PKR\n%-25s :       %.2f PKR\n%-25s :       %.2f PKR\n",
             "Tax", withdrawlTax,"Surcharges", surcharge,"Withdrawl Amount", amount,"Total Amount Deducted", totalWithdrawlCost);
-            System.out.printf("The account balance after withdrawing %.2f PKR is : %.2f PKR\n",totalWithdrawlCost, this.balance);
         }
     }
     
@@ -679,7 +709,63 @@ public class BankingSystem
     public static void main(String[] args) 
     {
 
-        System.out.println("Hello World");
+        //SAMPLE AI GENERATED OUTPUTS !!!
+        System.out.println("=====    SCNZ & SONS PVT. LTD.    =====");
+
+        CurrentAccount a1 = new CurrentAccount(1, 1234, "Ali Khan", 50000, false, true);
+        SavingsAccount a2 = new SavingsAccount(2, 4321, "Sara Ahmed", 30, 250000, true, true);
+        InvestmentAccount a3 = new InvestmentAccount(5, 1111, 3, "Usman Tariq", 1000000, true, false);
+
+        // TESTING DEPOSIT 
+        System.out.println("\n--- DEPOSIT TEST ---");
+        a1.deposit(10000);        // Current Account deposit
+        a2.deposit(50000);        // Savings Account deposit
+        a3.deposit(200000);       // Investment Account deposit
+
+        // TESTING WITHDRAW 
+        System.out.println("\n--- WITHDRAW TEST ---");
+        a1.withdraw(5000);
+        a2.withdraw(30000);
+        a3.withdraw(150000);
+
+        //  SHOW ACCOUNT INFO 
+        System.out.println("\n--- SHOW INFO ---");
+        a1.showInfo();
+        a2.showInfo();
+        a3.showInfo();
+
+        // SHOW BALANCE 
+        System.out.println("\n--- SHOW BALANCE ---");
+        a1.showBalance(); System.out.println();
+        a2.showBalance(); System.out.println();
+        a3.showBalance(); System.out.println();
+
+        // DEDUCT ZAKAT 
+        System.out.println("\n--- DEDUCT ZAKAT ---");
+        a1.deductZakat(); // should be inapplicable
+        a2.deductZakat(); // applicable
+        a3.deductZakat(); // applicable
+
+        //  TOTAL EARNING & REAL PROFIT 
+        System.out.println("\n--- TOTAL EARNING & REAL PROFIT ---");
+        System.out.printf("Total earning a1: %.2f\n", a1.getTotalEarning());
+        System.out.printf("Total earning a2: %.2f\n", a2.getTotalEarning());
+        System.out.printf("Total earning a3: %.2f\n", a3.getTotalEarning());
+
+        System.out.printf("Real profit a1: %.2f\n", a1.realProfit());
+        System.out.printf("Real profit a2: %.2f\n", a2.realProfit());
+        // For InvestmentAccount, use country/year version for realistic profit
+        System.out.printf("Real profit a3 (Pakistan 2021): %.2f\n", a3.realProfit("Pakistan", 2021));
+
+        // 
+        ArrayList<Account> earnings = new ArrayList<>();
+        earnings.add(a2);
+        earnings.add(a3);
+
+        System.out.println("\n--- TOTAL PROFITS ---");
+        System.out.printf("Total nominal profit (all earning accounts): %.2f PKR\n", Account.getTotalProfit(earnings));
+        System.out.printf("Total real profit (all earning accounts): %.2f PKR\n", Account.getTotalRealProfit(earnings));
+
         System.out.println("=====    SCNZ & SONS PVT. LTD.    =====");
         
         //array list for saving the earnings accounts that i will pass to the method
@@ -687,7 +773,7 @@ public class BankingSystem
         ArrayList <Account> earningAccounts = new ArrayList<>();
         ArrayList<Account> accounts = new ArrayList<>();
         boolean exit = false;
-        int accountCouter=1;
+        int accountCounter=62;
 
         while (!exit)
         {
@@ -716,16 +802,34 @@ public class BankingSystem
             {
                 case 1: 
                 {
-                    System.out.println("Select account type:-");
-                    System.out.println("1-Current");
-                    System.out.println("2-Savings");
-                    System.out.print("3-Investment\n");
-                    System.out.print("> ");
-                    int type = sc.nextInt();
-                    sc.nextLine();
+                    int type=0;
+                    boolean goBack=true;
 
-                    System.out.printf("Account ID : %02d (system assigned)\n",accountCouter);
-                    int id=accountCouter;
+                    
+                    do
+                    {
+                        System.out.println("Select account type:-");
+                        System.out.println("1-Current");
+                        System.out.println("2-Savings");
+                        System.out.print("3-Investment\n");
+                        System.out.print("> ");
+                        type = sc.nextInt();
+                        sc.nextLine();
+                        if (type<1 || type > 4) 
+                        {
+                            System.out.println("Invalid Option Entered ...Try Again plz !");    
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                    } while (true);    
+                    
+                    System.out.print("Enter Account Holder Name : ");
+                    String name = sc.nextLine();
+                    System.out.printf("Account ID : %02d (system assigned)\n",accountCounter);
+                    int id=accountCounter;
                     int pin, pinConfirm;                      
                     do
                     {
@@ -744,9 +848,6 @@ public class BankingSystem
                     
                     } while (pin != pinConfirm);
 
-
-                    System.out.print("Enter Account Holder Name : ");
-                    String name = sc.nextLine();
                     System.out.print("Initial balance : ");
                     double balance = sc.nextDouble(); sc.nextLine();
                     System.out.print("Is zakat applicable? (y/n) : ");
@@ -757,30 +858,28 @@ public class BankingSystem
                     if (type == 1) 
                     {
                         accounts.add(new CurrentAccount(id, pin, name,balance, zakat, filer));
-                        continue;
                     } 
                     else if (type == 2) 
                     {
                         System.out.print("Age : ");
                         int age = sc.nextInt(); 
                         sc.nextLine();
-                        accounts.add(new SavingsAccount(id, pin, name, age, balance, zakat, filer));
-                        earningAccounts.add(new SavingsAccount(id, pinConfirm, name, age, balance, zakat, filer));
+                        SavingsAccount Sannan = new SavingsAccount(id, pin, name, age, balance, zakat, filer);
+                        accounts.add(Sannan);
+                        earningAccounts.add(Sannan);
                     } 
                     else if (type == 3) 
                     {
                         System.out.print("Investment duration in years : ");
                         int years = sc.nextInt(); 
                         sc.nextLine();
-                        accounts.add(new InvestmentAccount(years, pin, id, name,balance, zakat, filer));
-                        earningAccounts.add(new InvestmentAccount(years, pinConfirm, accountCouter, name, balance, zakat, filer));
+                        InvestmentAccount Sannan = new InvestmentAccount(years, pinConfirm,id, name, balance, zakat, filer);
+                        accounts.add(Sannan);
+                        earningAccounts.add(Sannan);
                     } 
-                    else 
-                    {
-                        System.out.println("Unknown account type ! Skipping creation....");
-                    }
                     System.out.println("Account created successfully !");
-                    accountCouter++;
+                    System.out.println("Thanks for opening your account in SCNZ PVT LTD :)");
+                    accountCounter++;
                     break;
                 }
 
@@ -887,14 +986,14 @@ public class BankingSystem
 
                 case 4: 
                 {
-                    System.out.printf("Total nominal profit (all accounts): %.2f\n", Account.getTotalProfit(accounts));
+                    System.out.printf("Total nominal profit (all accounts): %.2f PKR\n", Account.getTotalProfit(earningAccounts));
                     break;
                 }
 
                 case 5: 
                 {
-                    System.out.println("Calculating total REAL profit for all accounts. Investment accounts may prompt for country/year.");
-                    System.out.printf("Total real profit (all accounts): %.2f\n", Account.getTotalRealProfit(accounts));
+                    System.out.println("Calculating total REAL profit for all accounts....");
+                    System.out.printf("Total real profit (all accounts): %.2f PKR\n", Account.getTotalRealProfit(earningAccounts));
                     break;
                 }
 
@@ -910,9 +1009,6 @@ public class BankingSystem
 
         System.out.println("Thank You :)");
         System.out.printf("%60s\n","FIN !");
-
-
-
 
         sc.close();
 
