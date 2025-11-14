@@ -1,0 +1,5 @@
+Hi this is my first file handling program in Java :)
+Good Bye !
+This is appended text !
+                                   FIN !
+
