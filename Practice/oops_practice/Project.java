@@ -570,6 +570,7 @@ public class Project
                             System.out.println("Invalid choice, defaulting to LOW.");
                             priority = Priority.LOW;
                         }
+                        
                         System.out.println("Select the nature of the Assignment : ");
                         System.out.println("1-Theory");
                         System.out.println("2-Lab");
