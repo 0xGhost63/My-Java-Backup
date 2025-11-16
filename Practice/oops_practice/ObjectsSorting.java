@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+
 class Movie implements Comparable<Movie>
 {
     String title;
