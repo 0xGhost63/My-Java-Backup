@@ -2,6 +2,9 @@ import java.time.LocalDate;
 // i don't think its necessary after *
 import java.util.*;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Date;
 
 abstract class Record implements Comparable<Record>
 {
@@ -132,15 +135,18 @@ class Assignment extends Record
     @Override
     public String toFileString()
     {
+        String lab;
+        lab=(isLab) ? "Lab" : "Theory" ;
         return String.join("|",
             "Assignment",
             String.valueOf(getnumb()),
             getTitle(),
             getCourseName(),
             getDeadline().toString(),
-            getPriority().name(),
             String.valueOf(getTotalMarks()),
-            String.valueOf(getIsLab())
+            String.valueOf(getIsLab()),
+            getPriority().name()
+
         );
     }
 
@@ -381,33 +387,135 @@ public class Project
         System.out.println("0-EXIT");
     }
 
-    public static void loadData()
+    public static void showProgress (String toPrint)
     {
+        java.util.Date date= new Date();
+        System.out.printf("[ %s ] ",date.toString());
+        System.out.printf("%s ",toPrint);
+        for (int i = 0; i < 3; i++)
+        {
+            System.out.print(".");
+            try 
+            {
+                Thread.sleep(300);   
+            } 
+            catch (InterruptedException e) 
+            {
+                System.out.println("Sleep Error: " + e.getMessage());
+            }
+        }
+        System.out.println();
+   
+    }
+
+    public static ArrayList<String> loadData()
+    {
+        ArrayList <String> data = new ArrayList<>();
+        boolean isFileFound=true;
+        
+
+
+        try 
+        {
+            showProgress("LOADING DATA");
+            Scanner fileReader = (new Scanner(new File("SCNZ.txt")));   
+
+            while (fileReader.hasNextLine())
+            {
+                String line;
+                line=fileReader.nextLine();
+                data.add(line);
+                System.out.println();
+            }
+            fileReader.close();
+        } 
+        catch (IOException e) 
+        {
+            System.out.println("Unable to load data : "+e.getMessage());
+            System.out.println("Creating new file !");
+            isFileFound=false;
+        }
+        finally
+        {
+            if(!isFileFound)
+            try 
+            {
+                File newFile = new File("SCNZ.txt");
+                newFile.createNewFile();
+            } 
+            catch (IOException ex) 
+            {
+                System.out.println("Could not create new file either :P");
+            }
+           
+        }
+
+        return data;
+
+    }
+
+    public static void backUP(ArrayList<String> newData)
+    {
+        
+        try 
+        {
+            FileWriter writer = new FileWriter("SCNZ.txt",true);
+            showProgress("BACKING UP");
+
+            for (String lines : newData)
+            {
+                writer.append(lines);
+            }
+            writer.close();
+        }
+        catch (IOException e) 
+        {
+            System.out.println("Unable to backup data error : "+e.getMessage());
+        }
+    }
+
+    public static void createObject ()
+    {
+        int numb;
+        String title;
+        String courseName;
+        int totalMarks;
+        LocalDate deadline;
+        Priority priority;
+
+        // For all !
         
     }
+
     public static void main(String[] args) 
     {
+        //ESSENTIALS !
         ArrayList <Record> objects = new ArrayList<>();
+        ArrayList<String> loadedData = new ArrayList<>();
+        ArrayList<String> toLoad = new ArrayList<>();
+        loadedData=loadData();
+
+
         Scanner input = new Scanner(System.in);
-        int choice=-63;
-        
-        // Scanner fileReader = new Scanner()
-        while (choice!=0)
+        int choice=0;
+
+        do
         {
             showMenu();    
-            System.out.print("Enter the choice (0-_)\n> ");
+            System.out.print("Enter the choice (0-10)\n> ");
             choice=input.nextInt();
 
             switch(choice)
             {
                 case 1:
                     int taskType=0;
-                    System.out.print("Which type of task would you like to create ?\n> ");
+                    System.out.print("Which type of task would you like to create ?\n");
                     System.out.println("1-Assignment(Theory/Lab)");
                     System.out.println("2-Quiz");
                     System.out.println("3-Note/Reminder");
                     System.out.println("4-Exam");
-
+                    System.out.print("> ");
+                    taskType=input.nextInt();
                     if (taskType==1)
                     {
                         int numb;
@@ -432,10 +540,10 @@ public class Project
                         for (int i = 0; i < keys.size(); i++) 
                         {
                             String key = keys.get(i);
-                            System.out.println("%d-%-7s",(i+1),RecordUtil.coursePriority.get(key));
+                            System.out.printf("%d-%s\n", (i + 1), key);             
                         }
 
-                        System.out.println("Enter the Course name : ");
+                        System.out.print("\nEnter the Course name : ");
                         courseName=input.nextLine();
                         System.out.print("Enter total marks : ");
                         totalMarks=input.nextInt();
@@ -474,22 +582,24 @@ public class Project
                         }
                         else
                         {
-                            isLab=True;
+                            isLab=true;
                         }
 
                         Assignment a = new Assignment(numb, title, courseName, totalMarks, deadline, priority, isLab);
-                        objects.get(a);
+                        objects.add(a);
+                        toLoad.add(a.toFileString());
                         System.out.println("Successfully Created the Assignment Task !");
 
-
-
-
-
-
-
                         break;
+   
+                    }
+                    
+                    case 2:
+                    {
 
                         
+
+                        break;
                     }
 
 
@@ -497,7 +607,13 @@ public class Project
             
 
 
-        }
+        }while(choice!=0);
+
+
+        backUP(toLoad);
+        showProgress("SIGNING OUT");
+
+
 
     }
     
@@ -505,3 +621,6 @@ public class Project
  
 
 
+// EDITING AVAILABILTY
+// OVERALL BACKUP
+// SORT BY CLASS
