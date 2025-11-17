@@ -26,6 +26,17 @@ abstract class Record implements Comparable<Record>
         setPriority(priority);
 
     }
+
+    //Exclusively for Note/Reminder Class
+    Record(int numb,String title,String courseName,LocalDate deadline,Priority priority)
+    {
+        setnumb(numb);
+        setTitle(title);
+        setCourseName(courseName);
+        setDeadline(deadline);
+        setPriority(priority);
+    }
+
     //setters
     public void setnumb(int numb) {
         this.numb = numb;
@@ -159,7 +170,7 @@ class Quiz extends Assignment
     private boolean isViva;
 
     Quiz(int numb,String title,String courseName,int totalMarks,LocalDate deadline,Priority priority,boolean isLab)
-    //,int totalMarks
+
     {
         super(numb, title, courseName,totalMarks,deadline, priority,isLab);
         setViva(isViva);
@@ -262,20 +273,20 @@ class Exam extends Record
 
 class Reminder extends Record
 {
-    String [] note;
+    ArrayList <String> note;
 
-    Reminder(int numb,String title,String courseName,int totalMarks,LocalDate deadline,Priority priority,String [] note)
+    Reminder(int numb,String title,String courseName,LocalDate deadline,Priority priority,ArrayList<String> note)
     {
-        super(numb, title, courseName, totalMarks, deadline, priority);
+        super(numb, title, courseName,deadline, priority);
         setNote(note);
     }
 
     //Getters & Setters
 
-    public void setNote(String[] note) {
+    public void setNote( ArrayList<String> note) {
         this.note = note;
     }
-    public String[] getNote() {
+    public ArrayList<String> getNote() {
         return note;
     }
 
@@ -289,8 +300,9 @@ class Reminder extends Record
         System.out.println("Deadline    : " + getDeadline());
         System.out.println("Priority    : " + getPriority());
         System.out.println("Notes       :");
-        if (note != null && note.length > 0) {
-            for (String n : note) {
+        if (note != null && note.size() > 0) {
+            for (String n : note) 
+            {
                 System.out.println("  - " + n);
             }
         } else {
@@ -303,7 +315,7 @@ class Reminder extends Record
     public String toFileString()
     {
         // Join multiple note lines into one string separated by semicolon
-        String notesStr = (note != null && note.length > 0) ? String.join(";", note) : "";
+        String notesStr = (note != null && note.size() > 0) ? String.join(";", note) : "";
 
         return String.join("|",
             "Reminder",
@@ -377,13 +389,26 @@ enum Priority
 
 public class Project 
 {
+    //ESSENTIALS !
+    static ArrayList <Record> objects = new ArrayList<>();
+    static ArrayList<String> loadedData = new ArrayList<>();
+    static ArrayList<String> toLoad = new ArrayList<>();
+    static Scanner input = new Scanner(System.in);
+    
+    static
+    {
+        loadedData=loadData();
+    }
+
     public static void showMenu()
     {
         System.out.println("\n====  Welcome :)  ====");
         System.out.println("Which option would you like to proceede with ?");
         System.out.println("1-Create a new Task");
-        System.out.println("2-Add a new note");
-        System.out.println("");
+        System.out.println("2-View Due Tasks For Today");
+        System.out.println("3-Search Tasks");
+        System.out.println("4-View All Tasks");
+        System.out.println("5-Edit a Task");
         System.out.println("0-EXIT");
     }
 
@@ -412,8 +437,6 @@ public class Project
     {
         ArrayList <String> data = new ArrayList<>();
         boolean isFileFound=true;
-        
-
 
         try 
         {
@@ -474,8 +497,9 @@ public class Project
         }
     }
 
-    public static void createObject ()
+    public static void createObject (int choice)
     {
+        //Base Variables !
         int numb;
         String title;
         String courseName;
@@ -483,20 +507,157 @@ public class Project
         LocalDate deadline;
         Priority priority;
 
+        
+
+
         // For all !
+        if (choice>=1 && choice <=4)
+        {
+
+            boolean isLab=false;
+            // String name = (choice==1) ? "Assignment" : "Quiz" ;
+            String name;
+            if (choice==1)
+            {
+                name="Assignment";
+            }
+            else if(choice==2)
+            {
+                name="Quiz";
+            }
+            else if(choice==3)
+            {
+                name="Note/Reminder";  
+            }
+            else if(choice==4)
+            {
+                name="Exam";   
+            }
+            else
+            {
+                name="DEFAULT";
+            }
+            System.out.printf("Enter the %s title : ",name);
+            Project.input.nextLine();
+            title=Project.input.nextLine();
+            System.out.printf("Enter the %s number : ",name);
+            numb=Project.input.nextInt();
+            Project.input.nextLine();
+            System.out.println("Available Course are : ");
+
+            List<String> keys = new ArrayList<>(RecordUtil.coursePriority.keySet());
+            for (int i = 0; i < keys.size(); i++) 
+            {
+                String key = keys.get(i);
+                System.out.printf("%d-%s\n", (i + 1), key);             
+            }
+
+            System.out.print("\nEnter the Course name : ");
+            courseName=Project.input.nextLine();
+            System.out.print("Enter total marks : ");
+            totalMarks=Project.input.nextInt();
+            // System.out.println("Enter the deadline date : ");
+            // deadline=input.next();
+            // QUESTIONABLE
+            //FIXED :
+            System.out.print("Enter deadline (MM-DD): ");
+            String md = Project.input.next();   
+            deadline = LocalDate.parse("2025-" + md);
+
+            System.out.println("Set priority : ");
+            System.out.println("1-Low");
+            System.out.println("2-Medium");
+            System.out.println("3-High");
+            System.out.println("4-Critical");
+            System.out.print("> ");
+            int pri;
+            pri=Project.input.nextInt();
+            if (pri >= 1 && pri <= 4)
+            {
+                priority = Priority.values()[pri - 1];  
+            }
+            else 
+            {
+                System.out.println("Invalid choice, defaulting to LOW.");
+                priority = Priority.LOW;
+            }
+
+            if (choice!=3 && choice!=4) //Only for Quiz & Assignment !
+            {
+                
+                System.out.printf("Select the nature of the %s : ",name);
+                System.out.print("1-Theory");
+                System.out.print("2-Lab\n");
+                System.out.print("> ");
+                int nature;
+                nature=Project.input.nextInt();
+                Project.input.nextLine();
+                if (nature==1)
+                {
+                    isLab=false;    
+                }
+                else
+                {
+                    isLab=true;
+                }
+            }
+
+            if (choice ==1) // Assignment
+            {
+                Assignment a = new Assignment(numb, title, courseName, totalMarks, deadline, priority, isLab);
+                objects.add(a);
+                toLoad.add(a.toFileString());
+            }
+            else if (choice == 2) // Quiz
+            {
+                Quiz q = new Quiz(numb, title, courseName, totalMarks, deadline, priority, isLab);
+                objects.add(q);
+                toLoad.add(q.toFileString());
+            }
+            else if(choice == 4) //Exam
+            {
+                String examType;
+                System.out.print("Enter the exam type (Mids/Finals)");
+                examType=Project.input.nextLine();
+
+                Exam e = new Exam(numb, title, courseName, totalMarks, deadline, priority, examType);
+                objects.add(e);
+                toLoad.add(e.toFileString());
+            }
+            else if (choice==3)
+            {
+                ArrayList <String> notesData = new ArrayList<>();
+                int counter=0;
+                String line;
+                System.out.print("Write Your Note :(FIN to finish writing) ");
+                while (true) 
+                {
+                    line=Project.input.nextLine();
+                    if (line.equalsIgnoreCase("FIN"))
+                    {
+                        break;    
+                    }
+                    else
+                    {
+                        notesData.add(line);
+                    }
+                }
+
+                Reminder r = new Reminder(numb, title, courseName,deadline, priority, notesData);
+                objects.add(r);
+                toLoad.add(r.toFileString());
+            }
+
+            System.out.printf("Successfully Created the %s Task !\n",name);
+        
+        }
+
         
     }
 
     public static void main(String[] args) 
     {
-        //ESSENTIALS !
-        ArrayList <Record> objects = new ArrayList<>();
-        ArrayList<String> loadedData = new ArrayList<>();
-        ArrayList<String> toLoad = new ArrayList<>();
-        loadedData=loadData();
 
-
-        Scanner input = new Scanner(System.in);
         int choice=0;
 
         do
@@ -518,81 +679,29 @@ public class Project
                     taskType=input.nextInt();
                     if (taskType==1)
                     {
-                        int numb;
-                        String title;
-                        String courseName;
-                        int totalMarks;
-                        LocalDate deadline;
-                        Priority priority;
-                        int pri;
-                        boolean isLab;   
-
-                        System.out.print("Enter the assignment title : ");
-                        input.nextLine();
-                        title=input.nextLine();
-                        System.out.print("Enter the assignment number : ");
-                        numb=input.nextInt();
-                        input.nextLine();
-                        System.out.println("Available Course are : ");
-
-                        List<String> keys = new ArrayList<>(RecordUtil.coursePriority.keySet());
-
-                        for (int i = 0; i < keys.size(); i++) 
-                        {
-                            String key = keys.get(i);
-                            System.out.printf("%d-%s\n", (i + 1), key);             
-                        }
-
-                        System.out.print("\nEnter the Course name : ");
-                        courseName=input.nextLine();
-                        System.out.print("Enter total marks : ");
-                        totalMarks=input.nextInt();
-                        // System.out.println("Enter the deadline date : ");
-                        // deadline=input.next();
-                        // QUESTIONABLE
-                        //FIXED :
-                        System.out.print("Enter deadline (YYYY-MM-DD): ");
-                        deadline = LocalDate.parse(input.next());
-
-                        System.out.println("Set priority : ");
-                        System.out.println("1-Low");
-                        System.out.println("2-Medium");
-                        System.out.println("3-High");
-                        System.out.println("4-Critical");
-                        System.out.print("> ");
-                        pri=input.nextInt();
-                        if (pri >= 1 && pri <= 4)
-                        {
-                            priority = Priority.values()[pri - 1];  
-                        }
-                        else 
-                        {
-                            System.out.println("Invalid choice, defaulting to LOW.");
-                            priority = Priority.LOW;
-                        }
-                        
-                        System.out.println("Select the nature of the Assignment : ");
-                        System.out.println("1-Theory");
-                        System.out.println("2-Lab");
-                        int nature;
-                        nature=input.nextInt();
-                        input.nextLine();
-                        if (nature==1)
-                        {
-                            isLab=false;    
-                        }
-                        else
-                        {
-                            isLab=true;
-                        }
-
-                        Assignment a = new Assignment(numb, title, courseName, totalMarks, deadline, priority, isLab);
-                        objects.add(a);
-                        toLoad.add(a.toFileString());
-                        System.out.println("Successfully Created the Assignment Task !");
-
+                        createObject(1);
                         break;
-   
+                    }
+                    else if(taskType==2) 
+                    {
+                        createObject(2);
+                        break;
+                    }
+                    else if(taskType==3)
+                    {
+                        createObject(3);
+                        break;
+                    }
+                    else if(taskType==4)
+                    {
+                        createObject(4);
+                        break;
+                    }
+                    else
+                    {
+                        System.out.println("Invalid Option Selected !");
+                        showProgress("Falling Back");
+                        break;
                     }
                     
                     case 2:
@@ -625,3 +734,5 @@ public class Project
 // EDITING AVAILABILTY
 // OVERALL BACKUP
 // SORT BY CLASS
+// NEW_Line in file for new task
+// Remove total marks from the notes ! (DONE)

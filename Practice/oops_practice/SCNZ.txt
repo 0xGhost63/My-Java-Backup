@@ -1,1 +1,1 @@
-Assignment|3|Interfaces|1|2025-11-19|HIGH|10|falseAssignment|3|Interfacws|2|2025-11-20|10|false|CRITICAL
+Reminder|1|My learnigs|OOP|2025-12-12|MEDIUM|;Hi My Name is Sannan;im good boy;im writing in an array list
