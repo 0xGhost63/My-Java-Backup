@@ -192,6 +192,16 @@ public class SalatSorting
 {
     public static void main(String[] args) 
     {
+        System.out.println("!!!");
+        System.out.println("There is a bug in the sorting by time in this code !");
+        try
+        {
+            Thread.sleep(2000);
+        }
+        catch(InterruptedException e)
+        {
+            System.out.println("Sleep Error !");
+        }
         ArrayList <Salat> Namaz = new ArrayList<>();
 
 
