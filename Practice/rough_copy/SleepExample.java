@@ -7,7 +7,7 @@ public class SleepExample {
             {
                 Thread.sleep(1000);  // pauses for 2 seconds
             } 
-            catch (InterruptedException e) 
+            catch (Exception e) 
             {
                 System.out.println("Sleep interrupted: " + e);
             }
