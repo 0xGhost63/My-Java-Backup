@@ -1,18 +1,18 @@
-class Test 
+class Parent
 
 {
     int number;
 
-    Test(int number)
+    Parent(int number)
     {
         this.number=number;
     }
 
 }
-class abu extends Test
+class Child extends Parent
 {
     int second_number;
-    abu(int number,int second_number)
+    Child(int number,int second_number)
     {
         super(number);
         this.second_number=second_number;
@@ -24,9 +24,9 @@ public class Abstract_Methods
 {
     public static void main(String [] args)
     {
-        abu a1 = new Test(63);
-        // Test t=new abu(63);
-        // abu a1 = new abu(63);
+        Parent a1 = new Child(63,21);
+        // Parent t=new Child(63);
+        // Child a1 = new Child(63);
         // t=a1;
     }
 }
