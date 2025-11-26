@@ -12,7 +12,7 @@ public class Exception_Handling
         }
         catch (ArithmeticException  e)
         {
-            System.out.println("Error : "+e.getMessage());
+            System.err.println("Error : "+e.getMessage());
         }
         finally
         {
