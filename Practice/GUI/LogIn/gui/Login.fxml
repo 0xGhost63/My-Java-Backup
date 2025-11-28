@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400" prefWidth="600" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SceneController">
+
+    <children>
+        <TextField fx:id="nameField" layoutX="200" layoutY="80" promptText="Your Name" />
+
+        <TextField fx:id="usernameField" layoutX="200" layoutY="130" promptText="Username" />
+
+        <PasswordField fx:id="passwordField" layoutX="200" layoutY="180" promptText="Password" />
+
+        <Button fx:id="submitButton" layoutX="250" layoutY="240" onAction="#showInformation" text="Submit" />
+    </children>
+</AnchorPane>

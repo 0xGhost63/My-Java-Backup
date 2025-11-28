@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400" prefWidth="600"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="gui.SceneController">
+
+    <children>
+        <Label fx:id="loginLabel"
+               text="Welcome to the Login Page"
+               layoutX="180" layoutY="40" />
+
+        <Button text="Let's Go !!!"
+                onAction="#showLoginPage"
+                layoutX="260" layoutY="150"/>
+    </children>
+
+</AnchorPane>

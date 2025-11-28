@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1">
+
+    <children>
+        <!-- Circle to move -->
+        <Circle fx:id="mycircle" fill="#e6ff1f" centerX="300.0" centerY="200.0" radius="50.0"
+                stroke="BLACK" strokeType="INSIDE"/>
+
+        <!-- Movement buttons -->
+        <Button layoutX="270.0" layoutY="14.0" mnemonicParsing="false" text="UP" onAction="#moveUP"/>
+        <Button layoutX="14.0" layoutY="162.0" mnemonicParsing="false" text="LEFT" onAction="#moveLEFT"/>
+        <Button layoutX="526.0" layoutY="162.0" mnemonicParsing="false" text="RIGHT" onAction="#moveRIGHT"/>
+        <Button layoutX="270.0" layoutY="360.0" mnemonicParsing="false" text="DOWN" onAction="#moveDOWN"/>
+    </children>
+
+</AnchorPane>
+

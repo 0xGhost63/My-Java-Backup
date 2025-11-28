@@ -26,14 +26,13 @@ public class Second extends Application
         Pane root = new Pane();
         //TEXT
         Text text = new Text();
-        text.setText("Hi from 0xGhost !! :)");
+        text.setText("Hi from Sannan !! :)");
         text.setFill(Color.RED);
         text.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
         text.setX(30);
         text.setY(50);
         root.getChildren().add(text);
 
-        Line line = new Line();
 
         Scene scene = new Scene(root,600,600,Color.LIGHTBLUE);
 
