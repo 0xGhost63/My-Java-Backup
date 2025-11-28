@@ -1,7 +1,7 @@
 import java.util.Scanner;
 class Person
 {
-    Protected String name;
+
 
     //Getter & Setters
     public String getName()
@@ -23,7 +23,7 @@ class Person
 
     Person()
     {
-        this.name="Unknown"
+        this.name="Unknown";
     }
 }
 

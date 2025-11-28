@@ -71,7 +71,7 @@ class CommercialConnection extends WaterConnection {
 public class LAB_MID {
     public static void main(String[] args) {
 
-        // ---- First output (given values) ---- //
+        // ---- Main output (given values) ---- //
         // --- residential connection given values
         ResidentialConnection r = new ResidentialConnection("R-101", 120, 2000);
         System.out.println("=== Residential Connection ===");

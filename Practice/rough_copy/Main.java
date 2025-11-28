@@ -3,7 +3,6 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
-
 public class Main extends Application 
 {
     public static void main(String[] args) {
@@ -13,7 +12,7 @@ public class Main extends Application
     @Override
     public void start(Stage mystage)
     {
-        mystage.setTitle("My First JavaFX Application");
+        mystage.setTitle("My Main JavaFX Application");
         FlowPane rootNode = new FlowPane();
         Label myLabel = new Label ("Hello World");
         Button myButton = new Button("Click Me :)");

@@ -29,7 +29,7 @@ class Car {
     }
 }
 
-public class First {
+public class Main {
     public static void main(String[] args) {
         // METHOD : 1
         // Car c1=new Car();

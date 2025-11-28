@@ -865,7 +865,7 @@ class SocietyDemo {
         }
         
         // 6. List first 3 vacant shops in LDA Avenue 1, Block C market
-        System.out.println("\n6. First 3 vacant shops in LDA Avenue 1, Block C market:");
+        System.out.println("\n6. Main 3 vacant shops in LDA Avenue 1, Block C market:");
         if (lda1 != null) {
             Block blockC = lda1.findBlock("Block C");
             if (blockC != null) {
