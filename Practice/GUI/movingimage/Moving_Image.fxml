@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<AnchorPane fx:id="root" prefHeight="400.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="movingimage.ImageController">
+
+    <children>
+        <ImageView fx:id="playerImage"
+                   layoutX="200"
+                   layoutY="200"
+                   fitHeight="100"
+                   fitWidth="100"
+                   preserveRatio="true">
+            <image>
+                <Image url="@character.png"/>
+            </image>
+        </ImageView>
+    </children>
+
+</AnchorPane>

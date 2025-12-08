@@ -1,6 +1,6 @@
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collections; 
 import java.util.Comparator;
 
 
@@ -74,7 +74,7 @@ class Salat implements Comparable <Salat>
 
 
 
-public class SP25_BSE_118
+final public class SP25_BSE_118
 {
     public static void main(String[] args) 
     {
