@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1006.0" prefWidth="793.0" style="-fx-background-color: #f5f5f5;">
+          <children>
+      
+              <!-- Semester Selection with RadioButton -->
+              <Label layoutX="30.0" layoutY="110.0" text="Semester Selection:">
+                  <font>
+                      <Font name="System Bold" size="13.0" />
+                  </font>
+              </Label>
+              <RadioButton fx:id="springRadio" layoutX="180.0" layoutY="110.0" mnemonicParsing="false" text="Spring 2026">
+                  <toggleGroup>
+                      <ToggleGroup fx:id="semester" />
+                  </toggleGroup>
+              </RadioButton>
+              <RadioButton layoutX="300.0" layoutY="110.0" mnemonicParsing="false" text="Fall 2026" toggleGroup="$semester" />
+      
+              <!-- Campus Selection with ComboBox -->
+              <Label layoutX="30.0" layoutY="150.0" text="Campus Selection:">
+                  <font>
+                      <Font name="System Bold" size="13.0" />
+                  </font>
+              </Label>
+              <ComboBox layoutX="180.0" layoutY="146.0" prefHeight="26.0" prefWidth="270.0" promptText="Select Campus">
+                  <items>
+                      <FXCollections fx:factory="observableArrayList">
+                          <String fx:value="Lahore" />
+                          <String fx:value="Islamabad" />
+                          <String fx:value="Abbottabad" />
+                          <String fx:value="Attock" />
+                          <String fx:value="Sahiwal" />
+                          <String fx:value="Vehari" />
+                          <String fx:value="Wah Cantt" />
+                      </FXCollections>
+                  </items>
+              </ComboBox>
+      
+              <!-- Separator -->
+              <Separator layoutX="30.0" layoutY="190.0" prefWidth="790.0" />
+      
+              <!-- Personal Information Section -->
+              <Label layoutX="30.0" layoutY="205.0" text="Personal Information" textFill="#1b5e20">
+                  <font>
+                      <Font name="System Bold" size="15.0" />
+                  </font>
+              </Label>
+      
+              <!-- TextField for First Name -->
+              <Label layoutX="30.0" layoutY="240.0" text="First Name:" />
+              <TextField layoutX="180.0" layoutY="236.0" prefHeight="26.0" prefWidth="270.0" promptText="Enter your first name" />
+      
+              <!-- TextField for Last Name -->
+              <Label layoutX="30.0" layoutY="280.0" text="Last Name:" />
+              <TextField layoutX="180.0" layoutY="276.0" prefHeight="26.0" prefWidth="270.0" promptText="Enter your last name" />
+      
+              <!-- DatePicker for Date of Birth -->
+              <Label layoutX="30.0" layoutY="320.0" text="Date of Birth:" />
+              <DatePicker layoutX="180.0" layoutY="316.0" prefHeight="26.0" prefWidth="270.0" promptText="Select date" />
+      
+              <!-- ChoiceBox for Gender -->
+              <Label layoutX="30.0" layoutY="360.0" text="Gender:" />
+              <ChoiceBox layoutX="180.0" layoutY="356.0" prefHeight="26.0" prefWidth="270.0">
+                  <items>
+                      <FXCollections fx:factory="observableArrayList">
+                          <String fx:value="Male" />
+                          <String fx:value="Female" />
+                          <String fx:value="Other" />
+                      </FXCollections>
+                  </items>
+              </ChoiceBox>
+      
+              <!-- ComboBox for Religion -->
+              <Label layoutX="30.0" layoutY="400.0" text="Religion:" />
+              <ComboBox layoutX="180.0" layoutY="396.0" prefHeight="26.0" prefWidth="270.0" promptText="Select Religion">
+                  <items>
+                      <FXCollections fx:factory="observableArrayList">
+                          <String fx:value="Islam" />
+                          <String fx:value="Christianity" />
+                          <String fx:value="Hinduism" />
+                          <String fx:value="Other" />
+                      </FXCollections>
+                  </items>
+              </ComboBox>
+      
+              <!-- TextField for CNIC -->
+              <Label layoutX="30.0" layoutY="440.0" text="CNIC/B-Form:" />
+              <TextField layoutX="180.0" layoutY="436.0" prefHeight="26.0" prefWidth="270.0" promptText="XXXXX-XXXXXXX-X" />
+      
+              <!-- TextArea for Address -->
+              <Label layoutX="30.0" layoutY="480.0" text="Address:" />
+              <TextArea layoutX="180.0" layoutY="476.0" prefHeight="60.0" prefWidth="270.0" promptText="Enter your complete address" wrapText="true" />
+      
+              <!-- TextField for Email -->
+              <Label layoutX="30.0" layoutY="555.0" text="Email Address:" />
+              <TextField layoutX="180.0" layoutY="551.0" prefHeight="26.0" prefWidth="270.0" promptText="example@email.com" />
+      
+              <!-- TextField for Mobile -->
+              <Label layoutX="30.0" layoutY="595.0" text="Mobile Number:" />
+              <TextField layoutX="180.0" layoutY="591.0" prefHeight="26.0" prefWidth="270.0" promptText="03XX-XXXXXXX" />
+      
+              <!-- PasswordField for Portal Password -->
+              <Label layoutX="30.0" layoutY="635.0" text="Set Password:" />
+              <PasswordField layoutX="180.0" layoutY="631.0" prefHeight="26.0" prefWidth="270.0" promptText="Create a password" />
+      
+              <!-- Separator -->
+              <Separator layoutX="30.0" layoutY="675.0" prefWidth="790.0" />
+      
+              <!-- Admission Details Section -->
+              <Label layoutX="480.0" layoutY="205.0" text="Admission Details" textFill="#1b5e20">
+                  <font>
+                      <Font name="System Bold" size="15.0" />
+                  </font>
+              </Label>
+      
+              <Label layoutX="480.0" layoutY="240.0" text="Program Selection:">
+                  <font>
+                      <Font name="System Bold" size="12.0" />
+                  </font>
+              </Label>
+      
+              <!-- CheckBoxes for Program Selection -->
+              <CheckBox layoutX="480.0" layoutY="270.0" mnemonicParsing="false" text="BS Computer Science" />
+              <CheckBox layoutX="480.0" layoutY="300.0" mnemonicParsing="false" text="BS Software Engineering" />
+              <CheckBox layoutX="480.0" layoutY="330.0" mnemonicParsing="false" text="BS Data Science" />
+              <CheckBox layoutX="480.0" layoutY="360.0" mnemonicParsing="false" text="BS Artificial Intelligence" />
+              <CheckBox layoutX="480.0" layoutY="390.0" mnemonicParsing="false" text="BS Electrical Engineering" />
+              <CheckBox layoutX="480.0" layoutY="420.0" mnemonicParsing="false" text="BS Mathematics" />
+              <CheckBox layoutX="480.0" layoutY="450.0" mnemonicParsing="false" text="BBA (Business Administration)" />
+              <CheckBox layoutX="480.0" layoutY="480.0" mnemonicParsing="false" text="BS Physics" />
+      
+              <!-- ToggleButton for Shift Selection -->
+              <Label layoutX="480.0" layoutY="520.0" text="Shift Preference:" />
+              <ToggleButton layoutX="600.0" layoutY="516.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" text="Morning">
+                  <toggleGroup>
+                      <ToggleGroup fx:id="shift" />
+                  </toggleGroup>
+              </ToggleButton>
+              <ToggleButton layoutX="700.0" layoutY="516.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" text="Evening" toggleGroup="$shift" />
+      
+              <!-- RadioButton for Hostel -->
+              <Label layoutX="480.0" layoutY="560.0" text="Hostel Required:" />
+              <RadioButton layoutX="600.0" layoutY="560.0" mnemonicParsing="false" text="Yes">
+                  <toggleGroup>
+                      <ToggleGroup fx:id="hostel" />
+                  </toggleGroup>
+              </RadioButton>
+              <RadioButton layoutX="680.0" layoutY="560.0" mnemonicParsing="false" text="No" toggleGroup="$hostel" />
+      
+              <!-- CheckBox for Transport -->
+              <CheckBox layoutX="480.0" layoutY="595.0" mnemonicParsing="false" text="University Transport Required" />
+      
+              <!-- CheckBox for Financial Aid -->
+              <CheckBox layoutX="480.0" layoutY="625.0" mnemonicParsing="false" text="Apply for Financial Aid" />
+      
+              <!-- Separator -->
+              <Separator layoutX="480.0" layoutY="660.0" prefWidth="340.0" />
+      
+              <!-- Qualifications Section -->
+              <Label layoutX="30.0" layoutY="690.0" text="Qualifications" textFill="#1b5e20">
+                  <font>
+                      <Font name="System Bold" size="15.0" />
+                  </font>
+              </Label>
+      
+              <!-- ComboBox for Matric -->
+              <Label layoutX="30.0" layoutY="725.0" text="Matric/O-Level:" />
+              <ComboBox layoutX="180.0" layoutY="721.0" prefHeight="26.0" prefWidth="130.0" promptText="Board/System">
+                  <items>
+                      <FXCollections fx:factory="observableArrayList">
+                          <String fx:value="Matric" />
+                          <String fx:value="O-Level" />
+                      </FXCollections>
+                  </items>
+              </ComboBox>
+      
+              <!-- Spinner for Total Marks -->
+              <Label layoutX="330.0" layoutY="725.0" text="Total Marks:" />
+      
+              <!-- TextField for Obtained Marks -->
+              <Label layoutX="550.0" layoutY="725.0" text="Obtained:" />
+              <TextField layoutX="620.0" layoutY="721.0" prefHeight="26.0" prefWidth="110.0" promptText="e.g., 950" />
+      
+              <!-- ChoiceBox for FSC -->
+              <Label layoutX="30.0" layoutY="765.0" text="FSC/A-Level:" />
+              <ChoiceBox layoutX="180.0" layoutY="761.0" prefHeight="26.0" prefWidth="130.0">
+                  <items>
+                      <FXCollections fx:factory="observableArrayList">
+                          <String fx:value="FSC Pre-Engineering" />
+                          <String fx:value="FSC Pre-Medical" />
+                          <String fx:value="ICS" />
+                          <String fx:value="A-Level" />
+                      </FXCollections>
+                  </items>
+              </ChoiceBox>
+      
+              <!-- Spinner for FSC Total Marks -->
+              <Label layoutX="330.0" layoutY="765.0" text="Total Marks:" />
+      
+              <!-- TextField for FSC Obtained -->
+              <Label layoutX="550.0" layoutY="765.0" text="Obtained:" />
+              <TextField layoutX="620.0" layoutY="761.0" prefHeight="26.0" prefWidth="110.0" promptText="e.g. 900" />
+      
+              <!-- Slider for Expected Percentage -->
+              <Label layoutX="34.0" layoutY="909.0" text="Expected Percentage:" />
+              <Slider layoutX="180.0" layoutY="898.0" majorTickUnit="10" max="100" min="50" prefWidth="540.0" showTickLabels="true" showTickMarks="true" value="63.0" />
+      
+              <!-- Action Buttons -->
+              <Button layoutX="255.0" layoutY="955.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" style="-fx-background-color: #1b5e20; -fx-text-fill: white; -fx-cursor: hand;" text="Submit">
+                  <font>
+                      <Font name="System Bold" size="12.0" />
+                  </font>
+              </Button>
+              <Button layoutX="420.0" layoutY="955.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" style="-fx-background-color: #757575; -fx-text-fill: white; -fx-cursor: hand;" text="Clear">
+                  <font>
+                      <Font name="System Bold" size="12.0" />
+                  </font>
+              </Button>
+            <Label alignment="CENTER" layoutX="-2.0" layoutY="-1.0" prefHeight="96.0" prefWidth="855.0" style="-fx-background-color: #1b5e20;" text="Comsats University,Islamabad , Lahore Campus" textFill="#f8f8f8">
+               <font>
+                  <Font name="DejaVu Sans Bold" size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="8.0" layoutY="77.0" text="Reg # SP25-BSE-118" textFill="WHITE">
+               <font>
+                  <Font name="FreeSans Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="30.0" layoutY="811.0" text="NTS Test Marks :" />
+            <TextField layoutX="418.0" layoutY="721.0" prefHeight="26.0" prefWidth="111.0" promptText="1100 or 1200" />
+            <TextField layoutX="418.0" layoutY="761.0" prefHeight="26.0" prefWidth="111.0" promptText="1100 or 1200" />
+            <TextField layoutX="180.0" layoutY="807.0" prefHeight="26.0" prefWidth="130.0" promptText="Total" />
+            <TextField layoutX="538.0" layoutY="807.0" prefHeight="26.0" prefWidth="130.0" promptText="Obtained" />
+      
+          </children>
+      </AnchorPane>
+   </content>
+</ScrollPane>
