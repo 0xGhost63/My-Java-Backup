@@ -1,0 +1,5 @@
+Hi its me again, experimenting with the Java nio.This time I'm using ArrayList to Write data to a file.Let's See What Happen ... :)
+Hi, Its me.
+Trying again.
+Because I forgot to use the Line Seprator :(
+FIN. (IG)

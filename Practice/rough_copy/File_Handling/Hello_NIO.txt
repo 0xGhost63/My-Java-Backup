@@ -1,0 +1,7 @@
+Hi im trying to learn the nio library of the Java...its going good so far Hello 
+Hello its me again,I tried System.lineSeparator() this time :)
+Hehehe...Its half NIO and half IO ;P
+Reading the NIO way now !
+Reading the NIO way now ! 2.0 (I forgot to use the for loop ;P)
+Damn , what were those numbers ?
+Nothing..signing out now !
