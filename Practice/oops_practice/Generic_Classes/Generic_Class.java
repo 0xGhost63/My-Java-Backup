@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Collections;
+
 class Employee <T,U>
 {
     U ID;
@@ -16,6 +19,11 @@ class Employee <T,U>
 
     }
 
+    public static <Z extends Number> void printNumber (Z numb)
+    {
+        System.out.println(numb);
+    }
+
 
 }
 public class Generic_Class 
@@ -27,6 +35,15 @@ public class Generic_Class
 
         e1.showData();
         e2.showData();
+        Employee.printNumber(5000);
+        ArrayList <String> list = new ArrayList<>();
+        list.add("Car");
+        list.add("Bilal");
+        list.add("Ali");
+    
+     
+        Collections.sort(list);
+        System.out.println("List after sorting : "+list);
 
 
 
