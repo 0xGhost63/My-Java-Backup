@@ -1,0 +1,2 @@
+Hi,I'm learning the file handling in the Java IO now !
+Ok, Bye !

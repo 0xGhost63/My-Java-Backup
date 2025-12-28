@@ -1,12 +1,5 @@
 class Student
 {
-    int roll;
-
-    Student(int roll)
-    {
-        this.roll=roll;
-    }
-
     void sayHI()
     {
         System.out.println("Hi im a student !");
@@ -20,14 +13,14 @@ class Student
 
 // MAIN CLASS
 
-public class Static {
-    public static void main(String[] args) 
+public class Static 
+{    public static void main(String[] args) 
     {
-        Student s1 = new Student(1);
-        s1.sayHI();
+        // Student s1 = new Student();
+        // s1.sayHI();
 
         Student.sayBye();
-        // Student.sayHi(); THROWS AN ERROR 
+        // Student.sayHi(); 
 
 
     }

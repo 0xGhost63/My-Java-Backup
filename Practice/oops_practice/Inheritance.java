@@ -27,6 +27,7 @@ class Teacher
 
 class AK extends Teacher
 {
+    
     AK (int ID,String name)
     {
         super(ID, name);
@@ -38,7 +39,6 @@ class AK extends Teacher
         System.out.println("Sir Abdul Karim is teaching ");
     }
 }
-
 
 
 

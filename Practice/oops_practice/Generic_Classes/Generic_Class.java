@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Collections;
-
 class Employee <T,U>
 {
     U ID;
@@ -35,7 +34,8 @@ public class Generic_Class
 
         e1.showData();
         e2.showData();
-        Employee.printNumber(5000);
+        Employee.printNumber(21);
+
         ArrayList <String> list = new ArrayList<>();
         list.add("Car");
         list.add("Bilal");
@@ -44,7 +44,6 @@ public class Generic_Class
      
         Collections.sort(list);
         System.out.println("List after sorting : "+list);
-
 
 
 
